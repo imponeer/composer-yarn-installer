@@ -4,7 +4,8 @@
 	"type": "composer-plugin",
 	"require": {
 		"mouf/nodejs-installer": "^1.0",
-		"composer-plugin-api": "^1.1"
+		"composer-plugin-api": "^1.1",
+		"php": ">=5.4"
 	},
 	"license": "MIT",
 	"authors": [
