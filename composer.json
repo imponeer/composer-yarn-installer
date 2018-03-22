@@ -22,7 +22,13 @@
 	"extra": {
 		"class": [
 			"Imponeer\\ComposerYarnInstaller\\Plugin"
-		]
+		],
+		"mouf": {
+			"nodejs": {
+				"targetDir": "vendor/nodejs/nodejs",
+				"forceLocal": true
+			}
+		}
 	},
 	"require-dev": {
 		"composer/composer": "^1.6"
