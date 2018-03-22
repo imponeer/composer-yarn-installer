@@ -1,0 +1,61 @@
+checks:
+    php:
+        duplication: true
+        unused_methods: false
+        unused_parameters: true
+        argument_type_checks: false
+        verify_property_names: false
+        method_calls_on_non_object: true
+        fix_doc_comments: false
+        instanceof_class_exists: false
+        catch_class_exists: false
+        assignment_of_null_return: false
+        use_statement_alias_conflict: false
+tools:
+    php_sim:
+        enabled: true
+        min_mass: 50             # Defaults to 16
+coding_style:
+    php:
+        indentation:
+            general:
+                use_tabs: true
+                size: 4
+            switch:
+                indent_case: true
+        spaces:
+            around_operators:
+                concatenation: true
+            ternary_operator:
+                before_condition: false
+                after_condition: false
+                before_alternative: false
+                after_alternative: false
+        braces:
+            classes_functions:
+                class: end-of-line
+                function: end-of-line
+                closure: end-of-line
+            if:
+                opening: end-of-line
+            for:
+                opening: end-of-line
+            while:
+                opening: end-of-line
+            do_while:
+                opening: end-of-line
+            switch:
+                opening: end-of-line
+            try:
+                opening: end-of-line
+        upper_lower_casing:
+            keywords:
+                general: lower
+            constants:
+                true_false_null: lower
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run

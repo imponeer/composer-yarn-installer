@@ -1,0 +1,29 @@
+{
+	"name": "imponeer/composer-yarn-installer",
+	"description": "Composer plugin to install yarn in vendor/",
+	"type": "composer-plugin",
+	"require": {
+		"mouf/nodejs-installer": "^1.0",
+		"composer-plugin-api": "^1.1"
+	},
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Raimondas Rimkevičius",
+			"email": "github@mekdrop.name"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Imponeer\\ComposerYarnInstaller\\": "src/"
+		}
+	},
+	"extra": {
+		"class": [
+			"Imponeer\\ComposerYarnInstaller\\Plugin"
+		]
+	},
+	"require-dev": {
+		"composer/composer": "^1.6"
+	}
+}
