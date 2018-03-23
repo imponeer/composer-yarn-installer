@@ -67,10 +67,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		$this->verboseWrite('Found node path:' . $path, $io);
 
 		$this->verboseWrite('Executing: npm update', $io);
-		$this->exec('npm update', $path, $io);
+		if (Environment::isWindows()) {
+			$this->exec('npm update', $path, $io);
+		} else {
+			$this->exec('./bin/npm update', $path, $io);
+		}
 
 		$this->verboseWrite('Executing: npm install yarn', $io);
-		$this->exec('npm install yarn', $path, $io);
+		if (Environment::isWindows()) {
+			$this->exec('npm install yarn', $path, $io);
+		} else {
+			$this->exec('./bin/npm install yarn', $path, $io);
+		}
 
 		$this->createBinScripts($binDir, $path, $is_local);
 	}
@@ -143,8 +151,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	protected function createBinScripts($binDir, $fullTargetDir, $isLocal)
 	{
 		if (!Environment::isWindows()) {
-			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarn', 'yarn', $isLocal);
-			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarnpkg', 'yarnpkg', $isLocal);
+			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarn', 'bin/yarn', $isLocal);
+			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarnpkg', 'bin/yarnpkg', $isLocal);
 			chmod($binDir . '/yarn', 0755);
 			chmod($binDir . '/yarnpkg', 0755);
 		} else {
