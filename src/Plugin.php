@@ -179,7 +179,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 			$script_filename,
 			array(
 				'#!/usr/bin/env bash',
-				$this->getFilePathForScript(
+				'DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"',
+				'$DIR/' . $this->getFilePathForScript(
 					$binPath,
 					$fullTargetDir,
 					$exec_filename,
