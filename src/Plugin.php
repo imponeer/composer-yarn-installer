@@ -208,7 +208,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		if (!$isLocal) {
 			return $fullTargetDir . DIRECTORY_SEPARATOR . $filename;
 		}
-		$converter = new Converter($fullTargetDir, realpath($binPath));
+		$converter = new Converter(
+			realpath($fullTargetDir),
+			realpath($binPath)
+		);
 		return $converter->convert($filename);
 	}
 
