@@ -237,6 +237,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 			$script_filename,
 			array(
 				'@ECHO OFF',
+				($isLocal ? '%~dp0' : '') .
 				$this->getFilePathForScript(
 					$binPath,
 					$fullTargetDir,
