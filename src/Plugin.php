@@ -212,7 +212,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 			realpath($fullTargetDir),
 			realpath($binPath)
 		);
-		return $converter->convert($filename);
+		$ret = $converter->convert($filename);
+		if (Environment::isWindows()) {
+			$ret = str_replace('/', '\\', $ret);
+		}
+		return $ret;
 	}
 
 	/**
@@ -242,5 +246,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 			)
 		);
 	}
+
 
 }
