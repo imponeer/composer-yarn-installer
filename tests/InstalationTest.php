@@ -44,25 +44,29 @@ class InstalationTest extends TestCase
 		$input = new ArrayInput(
 			array('command' => $command)
 		);
-		$application = new Application();
-		$application->setAutoExit(false);
+		fwrite(STDOUT, 'Executing composer command: ' . $command);
 		$old_dir = getcwd();
 		chdir($dir);
+		$application = new Application();
+		$application->setAutoExit(false);
 		$exit_code = $application->run($input);
-		$bin_dir = realpath('vendor' . DIRECTORY_SEPARATOR . 'dir');
+		$bin_dir = 'vendor' . DIRECTORY_SEPARATOR . 'dir';
+		fwrite(STDOUT, 'Bin dir: ' . $bin_dir);
 		chdir($old_dir);
 
 		$this->assertEquals(0, $exit_code, 'Composer installer exited with non-zero status');
 		$exec = Environment::isWindows() ? array('yarn.bat', 'yarnpkg.bat') : array('yarn', 'yarnpkg');
 		foreach ($exec as $file) {
-			$full_path = $bin_dir . DIRECTORY_SEPARATOR . $file;
+			$full_path = realpath($bin_dir) . DIRECTORY_SEPARATOR . $file;
 			$this->assertFileExists($full_path, $file . ' doesn\'t exist in bin');
 			$this->assertTrue(is_executable($full_path), $file . ' is not executable');
+			fwrite(STDOUT, 'Executing command: ' . $full_path . ' --help');
 			$process = new Process(
 				array(
-					$full_path,
+					$file,
 					'--help'
-				)
+				),
+				realpath($bin_dir)
 			);
 			try {
 				$process->mustRun();
