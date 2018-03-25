@@ -106,7 +106,7 @@ class InstalationTest extends TestCase
 		$this->dirs[0] = $this->generateRandomFolder();
 		$this->dirs[1] = $this->generateRandomFolder();
 		$filesystem = new Filesystem();
-		array_walk($this->dirs, array($filesystem, 'mkdir'));
+		array_walk($this->dirs, array($filesystem, 'mkdir'), 0777);
 		file_put_contents(
 			$this->dirs[0] . DIRECTORY_SEPARATOR . 'composer.json',
 			$this->generate_composer_json(true),
