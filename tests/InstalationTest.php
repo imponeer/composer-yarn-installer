@@ -107,21 +107,19 @@ class InstalationTest extends TestCase
 	 */
 	protected function setUp()
 	{
+		@ini_set('memory_limit', '512M');
 		$this->dirs[0] = $this->generateRandomFolder();
 		$this->dirs[1] = $this->generateRandomFolder();
 		$filesystem = new Filesystem();
 		array_walk($this->dirs, array($filesystem, 'mkdir'), 0777);
-		file_put_contents(
+		$filesystem->dumpFile(
 			$this->dirs[0] . DIRECTORY_SEPARATOR . 'composer.json',
-			$this->generate_composer_json(true),
-			LOCK_EX
+			$this->generate_composer_json(true)
 		);
-		file_put_contents(
-			$this->dirs[1] . DIRECTORY_SEPARATOR . 'composer.json',
-			$this->generate_composer_json(false),
-			LOCK_EX
+		$filesystem->dumpFile(
+			$this->dirs[0] . DIRECTORY_SEPARATOR . 'composer.json',
+			$this->generate_composer_json(false)
 		);
-		@ini_set('memory_limit', '256M');
 	}
 
 	/**
@@ -131,13 +129,10 @@ class InstalationTest extends TestCase
 	 */
 	public function generateRandomFolder()
 	{
-		$tmp_dir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
-		if (file_exists($tmp_dir . 'tmp')) {
-			$tmp_dir .= 'tmp' . DIRECTORY_SEPARATOR;
-		}
+		$tmp_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
 		while (
 		file_exists(
-			$dir = $tmp_dir . 'test_' . sha1(microtime(true)) . '.tmp'
+			$dir = $tmp_dir . 'test_' . sha1(microtime(true))
 		)
 		) ;
 		return $dir;

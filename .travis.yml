@@ -8,13 +8,6 @@ matrix:
         apt:
           packages:
             - npm
-      before_install:
-        - mkdir -p project
-        - mv tests project
-        - find "." -maxdepth 1 -not -type d -exec mv -t "project" -- '{}' +
-        - mkdir -p tmp
-        - chmod 0777 tmp
-        - mkdir /tmp/aaaa
     - os: osx
       osx_image: xcode9.3beta
       language: objective-c
@@ -22,12 +15,6 @@ matrix:
         - brew update
         - brew tap homebrew/php
         - brew install composer
-        - mkdir -p project
-        - mv tests project
-        - find "." -maxdepth 1 -not -type d -exec mv -t "project" -- '{}' +
-        - mkdir -p tmp
-        - chmod 0777 tmp
-        - mkdir /tmp/aaaa
 script:
   - cd project
   - composer install --optimize-autoloader --no-suggest

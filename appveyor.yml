@@ -26,5 +26,13 @@ install:
   - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar install --prefer-source --no-interaction
 test_script:
-  - mkdir ..\tmp
+  - mkdir c:\test.tmp
+  - set old_temp=%TEMP%
+  - set old_tmp=%TMP%
+  - set TEMP=c:\test.tmp
+  - set TMP=c:\test.tmp
   - vendor\bin\phpunit
+  - set TEMP=%old_temp%
+  - set TMP=%old_tmp%
+  - del /q "C:\test.tmp\*"
+  - FOR /D %%p IN ("C:\test.tmp\*.*") DO rmdir "%%p" /s /q
