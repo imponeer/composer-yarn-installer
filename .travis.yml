@@ -10,7 +10,7 @@ matrix:
             - npm
       before_install:
         - mkdir -p /tmp
-        - chmod 0777
+        - chmod 0777 /tmp
     - os: osx
       osx_image: xcode9.3beta
       language: objective-c
