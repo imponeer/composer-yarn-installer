@@ -36,3 +36,4 @@ test_script:
   - set TMP=%old_tmp%
   - del /q "C:\test.tmp\*"
   - FOR /D %%p IN ("C:\test.tmp\*.*") DO rmdir "%%p" /s /q
+  - rmdir C:\test.tmp /s /q
