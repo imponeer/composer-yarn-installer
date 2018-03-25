@@ -1,0 +1,23 @@
+language: php
+
+os:
+  - linux
+  - osx
+
+before_install: |
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    brew update
+    brew tap homebrew/php
+    brew tap homebrew/dupes
+    brew install php70
+    brew install composer
+  fi;
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    sudo apt-get -qq update
+    sudo apt-get install -y npm
+  fi;
+  composer -V
+
+script: |
+  composer install --optimize-autoloader --no-suggest
+  phpunit
