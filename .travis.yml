@@ -19,7 +19,7 @@ matrix:
         - brew tap homebrew/php
         - brew install composer
         - mkdir -p /tmp
-        - chmod 0777
+        - chmod 0777 /tmp
 script:
   - composer install --optimize-autoloader --no-suggest
   - ./vendor/bin/phpunit
