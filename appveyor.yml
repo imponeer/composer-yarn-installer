@@ -1,7 +1,9 @@
 install:
-  - "cinst composer"
+  - "cinst php"
   - "cinst nodejs"
 test_script:
-  - refreshenv
-  - "composer install --optimize-autoloader --no-suggest"
+  - "php -v"
+  - "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\""
+  - "php composer-setup.php"
+  - "php composer.phar install --optimize-autoloader --no-suggest"
   - vendor\bin\phpunit
