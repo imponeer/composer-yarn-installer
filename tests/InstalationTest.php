@@ -139,7 +139,7 @@ class InstalationTest extends TestCase
 	private function generate_composer_json($is_local)
 	{
 		return json_encode([
-			'name' => 'test' . sha1($this->dir),
+			'name' => 'test-' . sha1(microtime(true)) . '-' . (string)((int)$is_local),
 			'description' => 'Just a dummy composer plugin for testing',
 			'license' => 'PDDL-1.0',
 			'type' => 'project',
