@@ -26,9 +26,5 @@ install:
   - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar install --prefer-source --no-interaction
 test_script:
-  - mkdir c:\test.tmp
-  - set old_temp=%TEMP%
-  - set old_tmp=%TMP%
-  - set TEMP=c:\test.tmp
-  - set TMP=c:\test.tmp
+  - mkdir ..\tmp
   - vendor\bin\phpunit

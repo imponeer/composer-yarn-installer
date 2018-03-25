@@ -12,6 +12,8 @@ matrix:
         - mkdir -p project
         - mv tests project
         - find "." -maxdepth 1 -not -type d -exec mv -t "project" -- '{}' +
+        - mkdir -p tmp
+        - chmod 0777 tmp
     - os: osx
       osx_image: xcode9.3beta
       language: objective-c
@@ -19,10 +21,11 @@ matrix:
         - brew update
         - brew tap homebrew/php
         - brew install composer
-        - brew install node
         - mkdir -p project
         - mv tests project
         - find "." -maxdepth 1 -not -type d -exec mv -t "project" -- '{}' +
+        - mkdir -p tmp
+        - chmod 0777 tmp
 script:
   - cd project
   - composer install --optimize-autoloader --no-suggest
