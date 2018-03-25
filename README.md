@@ -1,6 +1,5 @@
 [![License](https://img.shields.io/github/license/imponeer/composer-yarn-installer.svg?maxAge=2592000)](LICENSE)
- [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/imponeer/composer-yarn-installer/badges/quality-score.png)](https://scrutinizer-ci.com/g/imponeer/composer-yarn-installer/) 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/imponeer/composer-yarn-installer.svg)](https://php.net) 
+ [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/imponeer/composer-yarn-installer/badges/quality-score.png)](https://scrutinizer-ci.com/g/imponeer/composer-yarn-installer/) [![OSX & Linux build Status](https://travis-ci.org/imponeer/composer-yarn-installer.svg?branch=master)](https://travis-ci.org/imponeer/composer-yarn-installer) [![Windows build status](https://ci.appveyor.com/api/projects/status/l9jm0rkq02lr9bmy/branch/master?svg=true)](https://ci.appveyor.com/project/imponeer/composer-yarn-installer/branch/master) [![PHP from Packagist](https://img.shields.io/packagist/php-v/imponeer/composer-yarn-installer.svg)](https://php.net) 
 [![Packagist](https://img.shields.io/packagist/v/imponeer/composer-yarn-installer.svg)](https://packagist.org/packages/imponeer/composer-yarn-installer) 
 [![Packagist](https://img.shields.io/packagist/dm/imponeer/composer-yarn-installer.svg)](https://packagist.org/packages/imponeer/composer-yarn-installer)
 
