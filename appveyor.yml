@@ -1,9 +1,5 @@
 install:
-  - "cinst php"
-  - "cinst nodejs"
+  - "choco install --acceptlicense --yes --stoponfirstfailure php nodejs composer"
 test_script:
-  - "php -v"
-  - "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\""
-  - "php composer-setup.php"
   - "php composer.phar install --optimize-autoloader --no-suggest"
   - vendor\bin\phpunit
