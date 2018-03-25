@@ -1,28 +1,23 @@
-language: php
-
-osx_image: xcode9.3beta
-
-php:
- - '7.1'
-
-os:
-  - linux
-  - osx
-
-before_install: |
-  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    brew update
-    brew tap homebrew/php
-    brew tap homebrew/dupes
-    brew install php70
-    brew install composer
-  fi;
-  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    sudo apt-get -qq update
-    sudo apt-get install -y npm
-  fi;
-  composer -V
-
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      language: php
+      php: 7.1
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: osx
+      osx_image: xcode9.3beta
+      language: objective-c
+      before_install:
+        - brew update
+        - brew tap homebrew/php
+        - brew tap homebrew/dupes
+        - brew install php70
+        - brew install composer
 script: |
   composer install --optimize-autoloader --no-suggest
   phpunit
