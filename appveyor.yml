@@ -1,8 +1,8 @@
 install:
-  - cinst composer
-  - cinst nodejs
+  - "cinst composer"
+  - "cinst nodejs"
 test_script:
-  cmd:
-    - refreshenv
-    - "composer install --optimize-autoloader --no-suggest"
-    - vendor\bin\phpunit
+  - cmd: |
+    refreshenv
+    composer install --optimize-autoloader --no-suggest
+    vendor\bin\phpunit
