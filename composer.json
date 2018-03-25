@@ -27,10 +27,11 @@
 	},
 	"require-dev": {
 		"composer/composer": "*",
-		"phpunit/phpunit": "^6.0",
+		"phpunit/phpunit": "^7.0",
 		"symfony/filesystem": "*",
 		"ext-json": "*",
 		"symfony/console": "*",
-		"symfony/process": "*"
+		"symfony/process": "*",
+		"php": ">=7.1"
 	}
 }
