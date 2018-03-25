@@ -32,8 +32,3 @@ test_script:
   - set TEMP=c:\test.tmp
   - set TMP=c:\test.tmp
   - vendor\bin\phpunit
-  - set TEMP=%old_temp%
-  - set TMP=%old_tmp%
-  - del /q "C:\test.tmp\*"
-  - FOR /D %%p IN ("C:\test.tmp\*.*") DO rmdir "%%p" /s /q
-  - rmdir C:\test.tmp /s /q

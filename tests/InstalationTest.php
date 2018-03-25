@@ -131,10 +131,10 @@ class InstalationTest extends TestCase
 	 */
 	public function generateRandomFolder()
 	{
-		$tmp_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
+		$tmp_dir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
 		while (
 		file_exists(
-			$dir = $tmp_dir . 'test_' . sha1(microtime(true))
+			$dir = $tmp_dir . 'test_' . sha1(microtime(true)) . '.tmp'
 		)
 		) ;
 		return $dir;
