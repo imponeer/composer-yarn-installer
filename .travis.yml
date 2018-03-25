@@ -17,6 +17,6 @@ matrix:
         - brew tap homebrew/dupes
         - brew install php70
         - brew install composer
-script: |
-  composer install --optimize-autoloader --no-suggest
-  phpunit
+script:
+  - composer install --optimize-autoloader --no-suggest
+  - phpunit
