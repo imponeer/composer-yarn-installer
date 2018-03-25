@@ -14,8 +14,6 @@ matrix:
       before_install:
         - brew update
         - brew tap homebrew/php
-        - brew tap homebrew/dupes
-        - brew install php70
         - brew install composer
 script:
   - composer install --optimize-autoloader --no-suggest
