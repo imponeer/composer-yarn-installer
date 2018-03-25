@@ -1,7 +1,6 @@
 matrix:
   include:
     - os: linux
-      dist: trusty
       sudo: required
       language: php
       php: 7.1
