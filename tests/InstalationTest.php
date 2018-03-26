@@ -3,6 +3,7 @@
 namespace Imponeer\ComposerYarnInstaller;
 
 use Composer\Console\Application;
+use Composer\Factory;
 use Composer\Util\Filesystem as FS;
 use Mouf\NodeJsInstaller\Environment;
 use PHPUnit\Framework\TestCase;
@@ -57,7 +58,7 @@ class InstalationTest extends TestCase
 
 		$application = new Application();
 		$application->setAutoExit(false);
-		$exit_code = $application->doRun($input);
+		$exit_code = $application->doRun($input, Factory::createOutput());
 		$bin_dir = $application->getComposer()->getConfig()->get('bind-dir');
 		fwrite(STDERR, 'Bin dir: ' . $bin_dir);
 
