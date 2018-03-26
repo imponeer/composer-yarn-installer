@@ -19,18 +19,11 @@ class InstalationTest extends TestCase
 {
 
 	/**
-	 * Directory where test data is located
-	 *
-	 * @var string[]
-	 */
-	protected $dirs;
-
-	/**
 	 * Test composer install command (local)
 	 */
 	public function testLocalInstall()
 	{
-		$this->mutual_test_code($this->dirs[0], 'install');
+		$this->mutual_test_code($this->generateRandomFolder(), 'install', true);
 	}
 
 	/**
@@ -38,21 +31,35 @@ class InstalationTest extends TestCase
 	 *
 	 * @param string $dir Directory where to run
 	 * @param string $command Command to execute
+	 * @param bool $is_local Is local yarn install?
 	 */
-	private function mutual_test_code($dir, $command)
+	private function mutual_test_code($dir, $command, $is_local)
 	{
+		$filesystem = new Filesystem();
+		$filesystem->mkdir($dir, 0777);
+		$filesystem->dumpFile(
+			$dir . DIRECTORY_SEPARATOR . 'composer.json',
+			$this->generate_composer_json($is_local)
+		);
+
 		$input = new ArrayInput(
 			array(
 				'command' => $command,
-				'--working-dir=' . $dir
+				'--working-dir' => $dir,
+				'--no-interaction' => true,
+				'--no-dev' => true,
+				'--no-suggest' => true,
+				'--optimize-autoloader' => true,
+				'-v' => true
 			)
 		);
-		fwrite(STDOUT, 'Executing composer command: ' . $command);
+		fwrite(STDERR, 'Executing composer command: ' . $command);
+
 		$application = new Application();
 		$application->setAutoExit(false);
-		$exit_code = $application->run($input);
+		$exit_code = $application->doRun($input);
 		$bin_dir = $application->getComposer()->getConfig()->get('bind-dir');
-		fwrite(STDOUT, 'Bin dir: ' . $bin_dir);
+		fwrite(STDERR, 'Bin dir: ' . $bin_dir);
 
 		$this->assertEquals(0, $exit_code, 'Composer installer exited with non-zero status');
 		$exec = Environment::isWindows() ? array('yarn.bat', 'yarnpkg.bat') : array('yarn', 'yarnpkg');
@@ -60,7 +67,7 @@ class InstalationTest extends TestCase
 			$full_path = realpath($bin_dir) . DIRECTORY_SEPARATOR . $file;
 			$this->assertFileExists($full_path, $file . ' doesn\'t exist in bin');
 			$this->assertTrue(is_executable($full_path), $file . ' is not executable');
-			fwrite(STDOUT, 'Executing command: ' . $full_path . ' --help');
+			fwrite(STDERR, 'Executing command: ' . $full_path . ' --help');
 			$process = new Process(
 				array(
 					$file,
@@ -76,67 +83,9 @@ class InstalationTest extends TestCase
 			}
 			$this->assertTrue($execution_ok, $file . ' failed to test if --help command works');
 		}
-	}
 
-	/**
-	 * Test composer install command (local)
-	 */
-	public function testLocalUpdate()
-	{
-		$this->mutual_test_code($this->dirs[0], 'update');
-	}
-
-	/**
-	 * Test composer install command (global)
-	 */
-	public function testGlobalInstall()
-	{
-		$this->mutual_test_code($this->dirs[1], 'install');
-	}
-
-	/**
-	 * Test composer update command (global)
-	 */
-	public function testGlobalUpdate()
-	{
-		$this->mutual_test_code($this->dirs[1], 'update');
-	}
-
-	/**
-	 * Setups tests
-	 */
-	protected function setUp()
-	{
-		@ini_set('memory_limit', '512M');
-		$this->dirs[0] = $this->generateRandomFolder();
-		$this->dirs[1] = $this->generateRandomFolder();
-		$filesystem = new Filesystem();
-		$filesystem->mkdir($this->dirs[0], 0777);
-		$filesystem->mkdir($this->dirs[1], 0777);
-		$filesystem->dumpFile(
-			$this->dirs[0] . DIRECTORY_SEPARATOR . 'composer.json',
-			$this->generate_composer_json(true)
-		);
-		$filesystem->dumpFile(
-			$this->dirs[1] . DIRECTORY_SEPARATOR . 'composer.json',
-			$this->generate_composer_json(false)
-		);
-	}
-
-	/**
-	 * Generates random folder
-	 *
-	 * @return string
-	 */
-	public function generateRandomFolder()
-	{
-		$tmp_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
-		while (
-		file_exists(
-			$dir = $tmp_dir . 'test_' . sha1(microtime(true))
-		)
-		) ;
-		return $dir;
+		$fs = new FS();
+		$fs->removeDirectory($dir);
 	}
 
 	private function generate_composer_json($is_local)
@@ -177,12 +126,52 @@ class InstalationTest extends TestCase
 	}
 
 	/**
-	 * Cleanups after tests
+	 * Generates random folder
+	 *
+	 * @return string
 	 */
-	protected function tearDown()
+	public function generateRandomFolder()
 	{
-		$filesystem = new FS();
-		array_walk($this->dirs, array($filesystem, 'removeDirectory'));
+		$tmp_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
+		while (
+		file_exists(
+			$dir = $tmp_dir . 'test_' . sha1(microtime(true))
+		)
+		) ;
+		return $dir;
+	}
+
+	/**
+	 * Test composer install command (global)
+	 */
+	public function _testGlobalInstall()
+	{
+		$this->mutual_test_code($this->generateRandomFolder(), 'install', true);
+	}
+
+	/**
+	 * Test composer update command (global)
+	 */
+	public function _testGlobalUpdate()
+	{
+		$this->mutual_test_code($this->generateRandomFolder(), 'update', false);
+	}
+
+	/**
+	 * Test composer install command (local)
+	 */
+	public function _testLocalUpdate()
+	{
+		$this->mutual_test_code($this->generateRandomFolder(), 'update', false);
+	}
+
+	/**
+	 * Setups tests
+	 */
+	protected function setUp()
+	{
+		@ini_set('memory_limit', '512M');
+		@set_time_limit(0);
 	}
 
 }

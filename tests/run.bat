@@ -5,7 +5,7 @@ set old_tmp=%TMP%
 set TEMP=c:\test.tmp
 set TMP=c:\test.tmp
 pushd %~dp0\..\
-vendor\bin\phpunit
+vendor\bin\phpunit -v --debug
 popd
 set OLD_PATH=
 set TEMP=%old_temp%
