@@ -16,6 +16,5 @@ matrix:
         - brew tap homebrew/php
         - brew install composer
 script:
-  - cd project
   - composer install --optimize-autoloader --no-suggest -v
-  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpunit -v --debug

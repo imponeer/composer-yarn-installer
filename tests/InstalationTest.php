@@ -144,7 +144,7 @@ class InstalationTest extends TestCase
 	/**
 	 * Test composer install command (global)
 	 */
-	public function _testGlobalInstall()
+	public function testGlobalInstall()
 	{
 		$this->mutual_test_code($this->generateRandomFolder(), 'install', true);
 	}
@@ -152,7 +152,7 @@ class InstalationTest extends TestCase
 	/**
 	 * Test composer update command (global)
 	 */
-	public function _testGlobalUpdate()
+	public function testGlobalUpdate()
 	{
 		$this->mutual_test_code($this->generateRandomFolder(), 'update', false);
 	}
@@ -160,7 +160,7 @@ class InstalationTest extends TestCase
 	/**
 	 * Test composer install command (local)
 	 */
-	public function _testLocalUpdate()
+	public function testLocalUpdate()
 	{
 		$this->mutual_test_code($this->generateRandomFolder(), 'update', false);
 	}
