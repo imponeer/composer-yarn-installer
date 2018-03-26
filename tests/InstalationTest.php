@@ -44,15 +44,13 @@ class InstalationTest extends TestCase
 		$input = new ArrayInput(
 			array('command' => $command)
 		);
+		$input->setOption('working-dir', $dir);
 		fwrite(STDOUT, 'Executing composer command: ' . $command);
-		$old_dir = getcwd();
-		chdir($dir);
 		$application = new Application();
 		$application->setAutoExit(false);
 		$exit_code = $application->run($input);
-		$bin_dir = 'vendor' . DIRECTORY_SEPARATOR . 'dir';
+		$bin_dir = $application->getComposer()->getConfig()->get('bind-dir');
 		fwrite(STDOUT, 'Bin dir: ' . $bin_dir);
-		chdir($old_dir);
 
 		$this->assertEquals(0, $exit_code, 'Composer installer exited with non-zero status');
 		$exec = Environment::isWindows() ? array('yarn.bat', 'yarnpkg.bat') : array('yarn', 'yarnpkg');

@@ -24,6 +24,6 @@ install:
   - SET PATH=%CD%;%PATH%
   - cd %CLONE_PATH%
   - php -r "readfile('http://getcomposer.org/installer');" | php
-  - php composer.phar install --prefer-source --no-interaction
+  - php composer.phar install --prefer-source --no-interaction -v
 test_script:
   - tests\run.bat

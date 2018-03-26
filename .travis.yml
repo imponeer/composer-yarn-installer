@@ -17,5 +17,5 @@ matrix:
         - brew install composer
 script:
   - cd project
-  - composer install --optimize-autoloader --no-suggest
+  - composer install --optimize-autoloader --no-suggest -v
   - ./vendor/bin/phpunit
