@@ -44,7 +44,7 @@ class InstalationTest extends TestCase
 		$input = new ArrayInput(
 			array(
 				'command' => $command,
-				'working-dir' => $dir
+				'--working-dir=' . $dir
 			)
 		);
 		fwrite(STDOUT, 'Executing composer command: ' . $command);
