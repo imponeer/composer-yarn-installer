@@ -42,9 +42,11 @@ class InstalationTest extends TestCase
 	private function mutual_test_code($dir, $command)
 	{
 		$input = new ArrayInput(
-			array('command' => $command)
+			array(
+				'command' => $command,
+				'working-dir' => $dir
+			)
 		);
-		$input->setOption('working-dir', $dir);
 		fwrite(STDOUT, 'Executing composer command: ' . $command);
 		$application = new Application();
 		$application->setAutoExit(false);
