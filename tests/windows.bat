@@ -22,6 +22,7 @@ echo All test completed sucessfully.
 exit 0
 
 :do_test
+	echo Running test: IS_LOCAL=%IS_LOCAL%; COMPOSER_COMMAND=%COMPOSER_COMMAND%
 	setlocal
 		call :generate_test_path
 		pushd %TEST_PATH%
