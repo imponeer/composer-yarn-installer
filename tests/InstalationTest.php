@@ -55,7 +55,7 @@ class InstalationTest extends TestCase
 			)
 		);
 		fwrite(STDERR, 'Executing composer command: ' . $command);
-
+		$this->expectOutputString('');
 		$application = new Application();
 		$application->setAutoExit(false);
 		$exit_code = $application->doRun($input, Factory::createOutput());
