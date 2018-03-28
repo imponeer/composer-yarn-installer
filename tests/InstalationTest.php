@@ -23,7 +23,9 @@ class InstalationTest extends TestCase
 		foreach ($exec as $file) {
 			$full_path = realpath($bin_dir . DIRECTORY_SEPARATOR . $file);
 			$this->assertFileExists($full_path, $file . ' doesn\'t exist in bin');
-			$this->assertTrue(is_executable($full_path), $file . ' is not executable');
+			if (!Environment::isWindows()) {
+				$this->assertTrue(is_executable($full_path), $file . ' is not executable');
+			}
 			fwrite(STDERR, 'Executing command: ' . $full_path . ' --help');
 			$process = new Process(
 				array(
