@@ -17,4 +17,41 @@ matrix:
         - brew install composer
 script:
   - composer install --optimize-autoloader --no-suggest -v
-  - ./vendor/bin/phpunit -v --debug
+  - mkdir $temp/install-local
+  - mkdir $temp/install-global
+  - mkdir $temp/only-update-local
+  - mkdir $temp/only-update-global
+  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
+  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
+  - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
+  - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
+  - export PHPUNIT_PATH=$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php
+  - |
+    pushd $temp/install-local
+    ls -a
+    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/install-global
+    ls -a
+    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/only-update-local
+    ls -a
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/only-update-global
+    ls -a
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - rm -rf $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
