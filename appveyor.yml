@@ -23,6 +23,7 @@ install:
   - echo extension=php_gettext.dll >> php.ini
   - SET PATH=%CD%;%PATH%
   - cd %CLONE_PATH%
+  - refreshenv
   - composer install --prefer-source --no-interaction -v
   - mkdir c:\test.tmp
   - mkdir c:\test.tmp\install-local
