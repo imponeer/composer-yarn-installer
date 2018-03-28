@@ -14,18 +14,9 @@ use Symfony\Component\Process\Process;
 class InstalationTest extends TestCase
 {
 	/**
-	 * Setups tests
-	 */
-	protected function setUp()
-	{
-		@ini_set('memory_limit', '512M');
-		@set_time_limit(0);
-	}
-
-	/**
 	 * Tests instalation
 	 */
-	private function testInstalation()
+	public function testInstalation()
 	{
 		$bin_dir = 'vendor' . DIRECTORY_SEPARATOR . 'bin';
 		$exec = Environment::isWindows() ? array('yarn.bat', 'yarnpkg.bat') : array('yarn', 'yarnpkg');
@@ -49,6 +40,15 @@ class InstalationTest extends TestCase
 			}
 			$this->assertTrue($execution_ok, $file . ' failed to test if --help command works');
 		}
+	}
+
+	/**
+	 * Setups tests
+	 */
+	protected function setUp()
+	{
+		@ini_set('memory_limit', '512M');
+		@set_time_limit(0);
 	}
 
 }
