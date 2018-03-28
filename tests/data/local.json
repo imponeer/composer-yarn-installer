@@ -1,0 +1,33 @@
+{
+	"name": "test-global",
+	"description": "Just a dummy composer plugin for testing",
+	"license": "PDDL-1.0",
+	"type": "project",
+	"authors": [
+		{
+			"name": "Some bot",
+			"email": "Get.it@i.am.not.real"
+		}
+	],
+	"repositories": [
+		{
+			"type": "path",
+			"url": "%SRC_PATH%",
+			"options": {
+				"symlink": false
+			}
+		}
+	],
+	"require": {
+		"imponeer/composer-yarn-installer": "*"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": false,
+	"extra": {
+		"mouf": {
+			"nodejs": {
+				"forceLocal": true
+			}
+		}
+	}
+}

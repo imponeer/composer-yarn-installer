@@ -26,4 +26,37 @@ install:
   - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar install --prefer-source --no-interaction -v
 test_script:
-  - tests\windows.bat
+    - mkdir c:\test.tmp
+    - mkdir c:\test.tmp\install-local
+    - mkdir c:\test.tmp\install-global
+    - mkdir c:\test.tmp\only-update-local
+    - mkdir c:\test.tmp\only-update-global
+    - php -r 'echo str_replace("%SRC_PATH%", json_encode(getcwd()), file_get_contents("tests\\data\\global.json"))' > c:\test.tmp\install-global\composer.json
+    - php -r 'echo str_replace("%SRC_PATH%", json_encode(getcwd()), file_get_contents("tests\\data\\local.json"))' > c:\test.tmp\install-local\composer.json
+    - type c:\test.tmp\install-global\composer.json > c:\test.tmp\only-update-global\composer.json
+    - type c:\test.tmp\install-local\composer.json > c:\test.tmp\only-update-local\composer.json
+    - set PHPUNIT_PATH=%CD%\vendor\bin\phpunit %CD%\tests\InstalationTest.php
+    - |
+        pushd c:\test.tmp\install-local
+        composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        popd
+    - |
+        pushd c:\test.tmp\install-global
+        composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        popd
+    - |
+    	pushd c:\test.tmp\only-update-local
+        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        popd
+    - |
+    	pushd c:\test.tmp\only-update-global
+        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+        %PHPUNIT_PATH%
+        popd
