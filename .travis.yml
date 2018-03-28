@@ -17,6 +17,7 @@ matrix:
         - brew install composer
 script:
   - composer install --optimize-autoloader --no-suggest -v
+  - export temp=$(mktemp -d)
   - mkdir $temp/install-local
   - mkdir $temp/install-global
   - mkdir $temp/only-update-local
