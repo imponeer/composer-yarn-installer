@@ -39,6 +39,7 @@ test_script:
     - set COMPOSER=php %CD%\composer.phar
     - |
         pushd c:\test.tmp\install-local
+        dir /w
         %COMPOSER% install --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         %COMPOSER% update --no-dev --optimize-autoloader --no-suggest --no-interaction
@@ -46,6 +47,7 @@ test_script:
         popd
     - |
         pushd c:\test.tmp\install-global
+        dir /w
         %COMPOSER% install --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         %COMPOSER% update --no-dev --optimize-autoloader --no-suggest --no-interaction
@@ -53,11 +55,13 @@ test_script:
         popd
     - |
         pushd c:\test.tmp\only-update-local
+        dir /w
         %COMPOSER% update --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         popd
     - |
         pushd c:\test.tmp\only-update-global
+        dir /w
         %COMPOSER% update --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         popd
