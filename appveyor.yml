@@ -51,12 +51,12 @@ test_script:
         %PHPUNIT_PATH%
         popd
     - |
-    	pushd c:\test.tmp\only-update-local
+        pushd c:\test.tmp\only-update-local
         composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         popd
     - |
-    	pushd c:\test.tmp\only-update-global
+        pushd c:\test.tmp\only-update-global
         composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
         %PHPUNIT_PATH%
         popd
