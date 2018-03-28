@@ -10,7 +10,8 @@ install:
   - sc config wuauserv start= auto
   - net start wuauserv
   - cinst -y php composer
-  - pushd c:\tools\php*
+  - SET CLONE_PATH=%CD%
+  - cd c:\tools\php*
   - copy php.ini-production php.ini
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
@@ -21,7 +22,7 @@ install:
   - echo extension=php_fileinfo.dll >> php.ini
   - echo extension=php_gettext.dll >> php.ini
   - SET PATH=%CD%;%PATH%
-  - popd
+  - cd %CLONE_PATH%
   - composer install --prefer-source --no-interaction -v
   - mkdir c:\test.tmp
   - mkdir c:\test.tmp\install-local
