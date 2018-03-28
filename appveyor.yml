@@ -31,8 +31,8 @@ test_script:
     - mkdir c:\test.tmp\install-global
     - mkdir c:\test.tmp\only-update-local
     - mkdir c:\test.tmp\only-update-global
-    - php -r 'echo str_replace("%SRC_PATH%", json_encode(getcwd()), file_get_contents("tests\\data\\global.json"))' > c:\test.tmp\install-global\composer.json
-    - php -r 'echo str_replace("%SRC_PATH%", json_encode(getcwd()), file_get_contents("tests\\data\\local.json"))' > c:\test.tmp\install-local\composer.json
+    - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests\\data\\global.json'));" > c:\test.tmp\install-global\composer.json
+    - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests\\data\\local.json'));" > c:\test.tmp\install-local\composer.json
     - type c:\test.tmp\install-global\composer.json > c:\test.tmp\only-update-global\composer.json
     - type c:\test.tmp\install-local\composer.json > c:\test.tmp\only-update-local\composer.json
     - set PHPUNIT_PATH=%CD%\vendor\bin\phpunit %CD%\tests\InstalationTest.php
