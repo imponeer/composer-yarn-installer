@@ -29,35 +29,35 @@ install:
   - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
   - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
   - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
-  - export PHPUNIT_PATH="$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php"
+  - touch $temp/test.sh
+  - chmod 0777 $temp/test.sh
+  - echo '#!/usr/bin/env' > $temp/test.sh
+  - echo 'WORKING_DIR=$1' >> $temp/test.sh
+  - echo 'COMPOSER_COMMAND=$2' >> $temp/test.sh
+  - echo 'pushd $WORKING_DIR' >> $temp/test.sh
+  - echo 'ls -a' >> $temp/test.sh
+  - echo 'composer $COMPOSER_COMMAND --no-dev --optimize-autoloader --no-suggest --no-interaction' >> $temp/test.sh
+  - echo 'ret_code=$?' >> $temp/test.sh
+  - echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
+  - echo '  echo "Composer command execution failed"' >> $temp/test.sh
+  - echo '  popd' >> $temp/test.sh
+  - echo '  exit $ret_code' >> $temp/test.sh
+  - echo 'fi;' >>
+  - echo "$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php" >> $temp/test.sh
+  - echo 'ret_code=$?' >> $temp/test.sh
+  - echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
+  - echo '  echo "PHP test command execution failed"' >> $temp/test.sh
+  - echo '  popd' >> $temp/test.sh
+  - echo '  exit $ret_code' >> $temp/test.sh
+  - echo 'fi;' >> $temp/test.sh
+  - echo 'popd' >> $temp/test.sh
+  - cat $temp/test.sh
 script:
   - export temp=$(mktemp -d)
-  - echo 'Test No #1'
-  - pushd $temp/install-local
-  - ls -a
-  - composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - popd
-  - echo 'Test No #2'
-  - pushd $temp/install-global
-  - ls -a
-  - composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - popd
-  - echo 'Test No #3'
-  - pushd $temp/only-update-local
-  - ls -a
-  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - popd
-  - echo 'Test No #4'
-  - pushd $temp/only-update-global
-  - ls -a
-  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-  - eval $PHPUNIT_PATH
-  - popd
-  - rm -rf $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
+  - $temp/test.sh $temp/install-local install
+  - $temp/test.sh $temp/install-local update
+  - $temp/test.sh $temp/install-global install
+  - $temp/test.sh $temp/install-global update
+  - $temp/test.sh $temp/only-update-local update
+  - $temp/test.sh $temp/only-update-global update
+  - rm -rf $temp/test.sh $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
