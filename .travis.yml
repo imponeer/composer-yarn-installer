@@ -31,32 +31,33 @@ install:
   - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
   - export PHPUNIT_PATH="$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php"
 script:
-  - |
-    pushd $temp/install-local
-    ls -a
-    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    popd
-  - |
-    pushd $temp/install-global
-    ls -a
-    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    popd
-  - |
-    pushd $temp/only-update-local
-    ls -a
-    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    popd
-  - |
-    pushd $temp/only-update-global
-    ls -a
-    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-    eval $PHPUNIT_PATH
-    popd
+  - export temp=$(mktemp -d)
+  - echo 'Test No #1'
+  - pushd $temp/install-local
+  - ls -a
+  - composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - popd
+  - echo 'Test No #2'
+  - pushd $temp/install-global
+  - ls -a
+  - composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - popd
+  - echo 'Test No #3'
+  - pushd $temp/only-update-local
+  - ls -a
+  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - popd
+  - echo 'Test No #4'
+  - pushd $temp/only-update-global
+  - ls -a
+  - composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+  - eval $PHPUNIT_PATH
+  - popd
   - rm -rf $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
