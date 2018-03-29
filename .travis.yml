@@ -15,6 +15,9 @@ matrix:
         - brew update
         - brew tap homebrew/php
         - brew install composer
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 install:
   - composer install --optimize-autoloader --no-suggest -v
   - export temp=$(mktemp -d)
