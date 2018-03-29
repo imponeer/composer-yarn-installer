@@ -56,10 +56,10 @@ script:
     echo 'popd' >> $temp/test.sh
     cat $temp/test.sh
   - export temp=$(mktemp -d)
-  - $temp/test.sh $temp/install-local install
-  - $temp/test.sh $temp/install-local update
-  - $temp/test.sh $temp/install-global install
-  - $temp/test.sh $temp/install-global update
-  - $temp/test.sh $temp/only-update-local update
-  - $temp/test.sh $temp/only-update-global update
+  - eval $temp/test.sh $temp/install-local install
+  - eval $temp/test.sh $temp/install-local update
+  - eval $temp/test.sh $temp/install-global install
+  - eval $temp/test.sh $temp/install-global update
+  - eval $temp/test.sh $temp/only-update-local update
+  - eval $temp/test.sh $temp/only-update-global update
   - rm -rf $temp/test.sh $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
