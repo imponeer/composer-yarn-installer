@@ -42,7 +42,7 @@ install:
   - echo '  echo "Composer command execution failed"' >> $temp/test.sh
   - echo '  popd' >> $temp/test.sh
   - echo '  exit $ret_code' >> $temp/test.sh
-  - echo 'fi;' >>
+  - echo 'fi;' >> $temp/test.sh
   - echo "$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php" >> $temp/test.sh
   - echo 'ret_code=$?' >> $temp/test.sh
   - echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
