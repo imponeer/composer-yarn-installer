@@ -18,41 +18,43 @@ matrix:
 cache:
   directories:
     - $HOME/.composer/cache/files
-install:
+script:
   - composer install --optimize-autoloader --no-suggest -v
   - export temp=$(mktemp -d)
-  - mkdir $temp/install-local
-  - mkdir $temp/install-global
-  - mkdir $temp/only-update-local
-  - mkdir $temp/only-update-global
-  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
-  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
-  - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
-  - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
-  - touch $temp/test.sh
-  - chmod 0777 $temp/test.sh
-  - echo '#!/usr/bin/env' > $temp/test.sh
-  - echo 'WORKING_DIR=$1' >> $temp/test.sh
-  - echo 'COMPOSER_COMMAND=$2' >> $temp/test.sh
-  - echo 'pushd $WORKING_DIR' >> $temp/test.sh
-  - echo 'ls -a' >> $temp/test.sh
-  - echo 'composer $COMPOSER_COMMAND --no-dev --optimize-autoloader --no-suggest --no-interaction' >> $temp/test.sh
-  - echo 'ret_code=$?' >> $temp/test.sh
-  - echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
-  - echo '  echo "Composer command execution failed"' >> $temp/test.sh
-  - echo '  popd' >> $temp/test.sh
-  - echo '  exit $ret_code' >> $temp/test.sh
-  - echo 'fi;' >> $temp/test.sh
-  - echo "$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php" >> $temp/test.sh
-  - echo 'ret_code=$?' >> $temp/test.sh
-  - echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
-  - echo '  echo "PHP test command execution failed"' >> $temp/test.sh
-  - echo '  popd' >> $temp/test.sh
-  - echo '  exit $ret_code' >> $temp/test.sh
-  - echo 'fi;' >> $temp/test.sh
-  - echo 'popd' >> $temp/test.sh
-  - cat $temp/test.sh
-script:
+  - |
+    mkdir $temp/install-local
+    mkdir $temp/install-global
+    mkdir $temp/only-update-local
+    mkdir $temp/only-update-global
+  - |
+    php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
+    php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
+    cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
+    cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
+  - |
+    touch $temp/test.sh
+    chmod 0777 $temp/test.sh
+    echo '#!/usr/bin/env' > $temp/test.sh
+    echo 'WORKING_DIR=$1' >> $temp/test.sh
+    echo 'COMPOSER_COMMAND=$2' >> $temp/test.sh
+    echo 'pushd $WORKING_DIR' >> $temp/test.sh
+    echo 'ls -a' >> $temp/test.sh
+    echo 'composer $COMPOSER_COMMAND --no-dev --optimize-autoloader --no-suggest --no-interaction' >> $temp/test.sh
+    echo 'ret_code=$?' >> $temp/test.sh
+    echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
+    echo '  echo "Composer command execution failed"' >> $temp/test.sh
+    echo '  popd' >> $temp/test.sh
+    echo '  exit $ret_code' >> $temp/test.sh
+    echo 'fi;' >> $temp/test.sh
+    echo "$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php" >> $temp/test.sh
+    echo 'ret_code=$?' >> $temp/test.sh
+    echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
+    echo '  echo "PHP test command execution failed"' >> $temp/test.sh
+    echo '  popd' >> $temp/test.sh
+    echo '  exit $ret_code' >> $temp/test.sh
+    echo 'fi;' >> $temp/test.sh
+    echo 'popd' >> $temp/test.sh
+    cat $temp/test.sh
   - export temp=$(mktemp -d)
   - $temp/test.sh $temp/install-local install
   - $temp/test.sh $temp/install-local update
