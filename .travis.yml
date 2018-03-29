@@ -54,8 +54,6 @@ script:
     echo '  exit $ret_code' >> $temp/test.sh
     echo 'fi;' >> $temp/test.sh
     echo 'popd' >> $temp/test.sh
-    cat $temp/test.sh
-  - export temp=$(mktemp -d)
   - eval $temp/test.sh $temp/install-local install
   - eval $temp/test.sh $temp/install-local update
   - eval $temp/test.sh $temp/install-global install
