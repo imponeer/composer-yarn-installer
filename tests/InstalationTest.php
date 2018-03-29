@@ -26,7 +26,7 @@ class InstalationTest extends TestCase
 			if (!Environment::isWindows()) {
 				$this->assertTrue(is_executable($full_path), $file . ' is not executable');
 			}
-			fwrite(STDERR, 'Executing command: ' . $full_path . ' --help' . PHP_EOL);
+			fwrite(STDOUT, PHP_EOL . 'Executing command: ' . $full_path . ' --help' . PHP_EOL);
 			$process = new Process(
 				array(
 					$file,
