@@ -1,80 +1,59 @@
-os:
-  - linux
-  - osx
-addons:
-  apt:
-    sources:
-      - ppa:ondrej/php
-    packages:
-      - npm
-      - curl
-      - php7.2
-      - git
-osx_image: xcode9.3beta
-language: c
-stages:
-  - download_composer_packages
-  - create_test_dirs
-  - before_tests
-  - test_1
-  - test_2
-  - test_3
-  - test_4
-before_install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew update;
-      brew tap homebrew/php
-      brew install composer
-    else
-      curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-    fi;
-jobs:
+matrix:
   include:
-    - stage: before_tests
-      script: export PHPUNIT_PATH=$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php
-    - stage: download_composer_packages
-      script: composer install --optimize-autoloader --no-suggest -v
-    - stage: create_test_dirs
-      script:
-        - export temp=$(mktemp -d)
-        - mkdir $temp/install-local
-        - mkdir $temp/install-global
-        - mkdir $temp/only-update-local
-        - mkdir $temp/only-update-global
-        - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
-        - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
-        - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
-        - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
-    - stage: test_1
-      script: |
-        pushd $temp/install-local
-        ls -a
-        composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        popd
-    - stage: test_2
-      script: |
-        pushd $temp/install-global
-        ls -a
-        composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        popd
-    - stage: test_3
-      script: |
-        pushd $temp/only-update-local
-        ls -a
-        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        popd
-    - stage: test_4
-      script: |
-        pushd $temp/only-update-global
-        ls -a
-        composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
-        eval $PHPUNIT_PATH
-        popd
+    - os: linux
+      sudo: required
+      language: php
+      php: 7.1
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: osx
+      osx_image: xcode9.3beta
+      language: objective-c
+      before_install:
+        - brew update
+        - brew tap homebrew/php
+        - brew install composer
+install:
+  - composer install --optimize-autoloader --no-suggest -v
+  - export temp=$(mktemp -d)
+  - mkdir $temp/install-local
+  - mkdir $temp/install-global
+  - mkdir $temp/only-update-local
+  - mkdir $temp/only-update-global
+  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
+  - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
+  - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
+  - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
+  - export PHPUNIT_PATH=$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php
+script:
+  - |
+    pushd $temp/install-local
+    ls -a
+    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/install-global
+    ls -a
+    composer install --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/only-update-local
+    ls -a
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - |
+    pushd $temp/only-update-global
+    ls -a
+    composer update --no-dev --optimize-autoloader --no-suggest --no-interaction
+    eval $PHPUNIT_PATH
+    popd
+  - rm -rf $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
