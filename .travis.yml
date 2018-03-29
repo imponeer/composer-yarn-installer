@@ -34,7 +34,7 @@ script:
   - |
     touch $temp/test.sh
     chmod 0777 $temp/test.sh
-    echo '#!/usr/bin/env' > $temp/test.sh
+    echo '#!/usr/bin/env bash' > $temp/test.sh
     echo 'WORKING_DIR=$1' >> $temp/test.sh
     echo 'COMPOSER_COMMAND=$2' >> $temp/test.sh
     echo 'pushd $WORKING_DIR' >> $temp/test.sh
