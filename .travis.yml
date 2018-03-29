@@ -26,7 +26,7 @@ install:
   - php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
   - cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
   - cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
-  - export PHPUNIT_PATH=$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php
+  - export PHPUNIT_PATH="$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php"
 script:
   - |
     pushd $temp/install-local
