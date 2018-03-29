@@ -4,6 +4,8 @@ shallow_clone: false
 platform: 'x86'
 environment:
   nodejs_version: "current"
+cache:
+  - %LOCALAPPDATA%\Composer\files
 install:
   - cinst -y OpenSSL.Light
   - SET PATH=C:\Program Files\OpenSSL;%PATH%
