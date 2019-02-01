@@ -27,7 +27,7 @@
 	},
 	"require-dev": {
 		"composer/composer": "*",
-		"phpunit/phpunit": "^7.0",
+		"phpunit/phpunit": "^8.0",
 		"symfony/filesystem": "*",
 		"ext-json": "*",
 		"symfony/console": "*",
