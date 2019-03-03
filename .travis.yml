@@ -12,18 +12,19 @@ matrix:
     - os: linux
       name: linux with installed npm and yarn (7.1)
       php: 7.1
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
       addons:
         apt:
           packages:
             - npm
-            - yarn
     - os: linux
       name: linux with installed yarn (7.1)
       php: 7.1
-      addons:
-        apt:
-          packages:
-            - yarn
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
     - os: linux
       name: linux without yarn and npm (7.1)
       php: 7.1
