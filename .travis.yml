@@ -69,12 +69,12 @@ matrix:
       name: windows with installed npm
       language: shell
       install:
-        - choco install -y composer npm
+        - choco install -y composer nodejs
     - os: windows
       name: windows with installed yarn and npm
       language: shell
       install:
-        - choco install -y composer npm yarn
+        - choco install -y composer nodejs yarn
     - os: windows
       name: linux with installed yarn
       language: shell
