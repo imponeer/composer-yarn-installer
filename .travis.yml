@@ -9,124 +9,131 @@ matrix:
         apt:
           packages:
             - npm
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux with installed npm and yarn (7.1)
       php: 7.1
-      before_install:
+      install:
         - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
         - export PATH=$HOME/.yarn/bin:$PATH
       addons:
         apt:
           packages:
             - npm
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux with installed yarn (7.1)
       php: 7.1
-      before_install:
+      install:
         - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
         - export PATH=$HOME/.yarn/bin:$PATH
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux without yarn and npm (7.1)
       php: 7.1
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx without yarn and npm
       language: objective-c
       osx_image: xcode9.4
-      before_install:
+      install:
+        - brew uninstall --force node
+        - brew cleanup
+        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
         - brew update
         - brew tap homebrew/core
         - brew install composer
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx with installed npm
       osx_image: xcode9.4
       language: objective-c
-      before_install:
+      install:
+        - brew uninstall --force node
+        - brew cleanup
+        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
         - brew update
         - brew tap homebrew/core
         - brew install composer node
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
-      name: osx with installed yarn and yarn
+      name: osx with installed npm and yarn
       osx_image: xcode9.4
       language: objective-c
-      before_install:
+      install:
+        - brew uninstall --force node
+        - brew cleanup
+        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
         - brew update
         - brew tap homebrew/core
         - brew install composer node yarn
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx with installed yarn
       osx_image: xcode9.4
       language: objective-c
-      before_install:
+      install:
+        - brew uninstall --force node
+        - brew cleanup
+        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
         - brew update
         - brew tap homebrew/core
         - brew install composer yarn
-      install:
-        - composer install --optimize-autoloader --no-suggest -v
     - os: windows
       name: windows without yarn and npm
       language: sh
-      before_install:
+      install:
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:$PATH
+        - export PATH=/c/php:/c/composer:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - wget http://getcomposer.org/composer.phar
-      install:
-        - php composer.phar install
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
     - os: windows
       name: windows with installed npm
       language: sh
-      before_install:
+      install:
         - choco install -y nodejs
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:$PATH
+        - export PATH=/c/php:/c/composer:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - wget http://getcomposer.org/composer.phar
-      install:
-        - php composer.phar install
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
     - os: windows
       name: windows with installed yarn and npm
       language: sh
-      before_install:
+      install:
         - choco install -y nodejs yarn
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:$PATH
+        - export PATH=/c/php:/c/composer:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - wget http://getcomposer.org/composer.phar
-      install:
-        - php composer.phar install
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
     - os: windows
       name: linux with installed yarn
       language: sh
-      before_install:
+      install:
         - choco install -y yarn
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:$PATH
+        - export PATH=/c/php:/c/composer:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - wget http://getcomposer.org/composer.phar
-      install:
-        - php composer.phar install
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
 
 cache:
   directories:
     - $HOME/.composer/cache/files
+
+before_script:
+  - composer -V
 
 script:
   - echo ":)"
