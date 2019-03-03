@@ -26,12 +26,13 @@
 		]
 	},
 	"require-dev": {
-		"composer/composer": "*",
-		"phpunit/phpunit": "^7.0",
-		"symfony/filesystem": "*",
+		"php": ">=7.1",
 		"ext-json": "*",
-		"symfony/console": "*",
-		"symfony/process": "*",
-		"php": ">=7.1"
+		"composer/composer": "*"
+	},
+	"config": {
+		"preferred-install": "dist",
+		"sort-packages": true,
+		"optimize-autoloader": true
 	}
 }

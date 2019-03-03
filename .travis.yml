@@ -1,63 +1,64 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+
 matrix:
   include:
     - os: linux
-      sudo: required
-      language: php
-      php: 7.1
       addons:
         apt:
           packages:
             - npm
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - npm
+            - yarn
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - yarn
+    - os: linux
     - os: osx
-      osx_image: xcode9.3beta
-      language: objective-c
-      before_install:
+      install:
         - brew update
         - brew tap homebrew/php
         - brew install composer
+    - os: osx
+      install:
+        - brew update
+        - brew tap homebrew/php
+        - brew install composer npm
+    - os: osx
+      install:
+        - brew update
+        - brew tap homebrew/php
+        - brew install composer npm yarn
+    - os: osx
+      install:
+        - brew update
+        - brew tap homebrew/php
+        - brew install composer yarn
+    - os: windows
+      install:
+        - choco install -y composer
+    - os: windows
+      install:
+        - choco install -y composer npm
+    - os: windows
+      install:
+        - choco install -y composer npm yarn
+    - os: windows
+      install:
+        - choco install -y composer yarn
+
 cache:
   directories:
     - $HOME/.composer/cache/files
 script:
   - composer install --optimize-autoloader --no-suggest -v
-  - export temp=$(mktemp -d)
-  - |
-    mkdir $temp/install-local
-    mkdir $temp/install-global
-    mkdir $temp/only-update-local
-    mkdir $temp/only-update-global
-  - |
-    php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/global.json'));" > $temp/install-global/composer.json
-    php -r "echo str_replace('\"%SRC_PATH%\"', json_encode(getcwd()), file_get_contents('tests/data/local.json'));" > $temp/install-local/composer.json
-    cat $temp/install-global/composer.json > $temp/only-update-global/composer.json
-    cat $temp/install-local/composer.json > $temp/only-update-local/composer.json
-  - |
-    touch $temp/test.sh
-    chmod 0777 $temp/test.sh
-    echo '#!/usr/bin/env bash' > $temp/test.sh
-    echo 'WORKING_DIR=$1' >> $temp/test.sh
-    echo 'COMPOSER_COMMAND=$2' >> $temp/test.sh
-    echo 'pushd $WORKING_DIR' >> $temp/test.sh
-    echo 'ls -a' >> $temp/test.sh
-    echo 'composer $COMPOSER_COMMAND --no-dev --optimize-autoloader --no-suggest --no-interaction' >> $temp/test.sh
-    echo 'ret_code=$?' >> $temp/test.sh
-    echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
-    echo '  echo "Composer command execution failed"' >> $temp/test.sh
-    echo '  popd' >> $temp/test.sh
-    echo '  exit $ret_code' >> $temp/test.sh
-    echo 'fi;' >> $temp/test.sh
-    echo "$PWD/vendor/bin/phpunit $PWD/tests/InstalationTest.php" >> $temp/test.sh
-    echo 'ret_code=$?' >> $temp/test.sh
-    echo 'if [ $ret_code != 0 ]; then' >> $temp/test.sh
-    echo '  echo "PHP test command execution failed"' >> $temp/test.sh
-    echo '  popd' >> $temp/test.sh
-    echo '  exit $ret_code' >> $temp/test.sh
-    echo 'fi;' >> $temp/test.sh
-    echo 'popd' >> $temp/test.sh
-  - $temp/test.sh $temp/install-local install
-  - $temp/test.sh $temp/install-local update
-  - $temp/test.sh $temp/install-global install
-  - $temp/test.sh $temp/install-global update
-  - $temp/test.sh $temp/only-update-local update
-  - $temp/test.sh $temp/only-update-global update
-  - rm -rf $temp/test.sh $temp/install-local $temp/install-global $temp/only-update-local $temp/only-update-global
