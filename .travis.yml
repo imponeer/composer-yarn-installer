@@ -127,3 +127,6 @@ matrix:
 cache:
   directories:
     - $HOME/.composer/cache/files
+
+script:
+  - echo ":)"
