@@ -1,33 +1,32 @@
 language: php
 
-php:
-  - 7.1
-  - 7.2
-  - 7.3
-
 matrix:
   include:
-    - name: linux with installed npm
+    - name: linux with installed npm (7.1)
+      php: 7.1
       os: linux
       addons:
         apt:
           packages:
             - npm
     - os: linux
-      name: linux with installed npm and yarn
+      name: linux with installed npm and yarn (7.1)
+      php: 7.1
       addons:
         apt:
           packages:
             - npm
             - yarn
     - os: linux
-      name: linux with installed yarn
+      name: linux with installed yarn (7.1)
+      php: 7.1
       addons:
         apt:
           packages:
             - yarn
     - os: linux
-      name: linux without yarn and npm
+      name: linux without yarn and npm (7.1)
+      php: 7.1
     - os: osx
       name: osx without yarn and npm
       language: objective-c
