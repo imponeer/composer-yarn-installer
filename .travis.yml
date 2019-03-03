@@ -2,6 +2,65 @@ language: php
 
 matrix:
   include:
+    - os: windows
+      name: windows without yarn and npm
+      language: sh
+      install:
+        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
+        - export PATH=/c/php:/c/composer:$PATH
+        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
+        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
+        - cat /c/composer/composer.bat
+    - os: windows
+      name: windows with installed npm
+      language: sh
+      install:
+        - choco install -y nodejs
+        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
+        - export PATH=/c/php:/c/composer:$PATH
+        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
+        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
+        - cat /c/composer/composer.bat
+    - os: windows
+      name: windows with installed yarn and npm
+      language: sh
+      install:
+        - choco install -y nodejs yarn
+        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
+        - export PATH=/c/php:/c/composer:$PATH
+        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
+        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
+        - cat /c/composer/composer.bat
+    - os: windows
+      name: linux with installed yarn
+      language: sh
+      install:
+        - choco install -y yarn
+        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
+        - export PATH=/c/php:/c/composer:$PATH
+        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
+        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
+        - mkdir /c/composer
+        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
+        - echo "@echo off" > /c/composer/composer.bat
+        - echo "" >> /c/composer/composer.bat
+        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
+        - cat /c/composer/composer.bat
     - name: linux with installed npm (7.1)
       php: 7.1
       os: linux
@@ -72,61 +131,6 @@ matrix:
         - brew update
         - brew tap homebrew/core
         - brew install composer yarn
-    - os: windows
-      name: windows without yarn and npm
-      language: sh
-      install:
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-    - os: windows
-      name: windows with installed npm
-      language: sh
-      install:
-        - choco install -y nodejs
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-    - os: windows
-      name: windows with installed yarn and npm
-      language: sh
-      install:
-        - choco install -y nodejs yarn
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-    - os: windows
-      name: linux with installed yarn
-      language: sh
-      install:
-        - choco install -y yarn
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
 
 cache:
   directories:
