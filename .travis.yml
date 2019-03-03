@@ -9,6 +9,8 @@ matrix:
         apt:
           packages:
             - npm
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux with installed npm and yarn (7.1)
       php: 7.1
@@ -19,93 +21,109 @@ matrix:
         apt:
           packages:
             - npm
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux with installed yarn (7.1)
       php: 7.1
       before_install:
         - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
         - export PATH=$HOME/.yarn/bin:$PATH
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: linux
       name: linux without yarn and npm (7.1)
       php: 7.1
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx without yarn and npm
       language: objective-c
       osx_image: xcode9.4
-      install:
+      before_install:
         - brew update
         - brew tap homebrew/core
         - brew install composer
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx with installed npm
       osx_image: xcode9.4
       language: objective-c
-      install:
+      before_install:
         - brew update
         - brew tap homebrew/core
         - brew install composer node
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx with installed yarn and yarn
       osx_image: xcode9.4
       language: objective-c
-      install:
+      before_install:
         - brew update
         - brew tap homebrew/core
         - brew install composer node yarn
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: osx
       name: osx with installed yarn
       osx_image: xcode9.4
       language: objective-c
-      install:
+      before_install:
         - brew update
         - brew tap homebrew/core
         - brew install composer yarn
+      install:
+        - composer install --optimize-autoloader --no-suggest -v
     - os: windows
       name: windows without yarn and npm
       language: sh
-      install:
+      before_install:
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
         - export PATH=/c/php:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
         - wget http://getcomposer.org/composer.phar
+      install:
         - php composer.phar install
     - os: windows
       name: windows with installed npm
       language: sh
-      install:
+      before_install:
         - choco install -y nodejs
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
         - export PATH=/c/php:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
         - wget http://getcomposer.org/composer.phar
+      install:
         - php composer.phar install
     - os: windows
       name: windows with installed yarn and npm
       language: sh
-      install:
+      before_install:
         - choco install -y nodejs yarn
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
         - export PATH=/c/php:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
         - wget http://getcomposer.org/composer.phar
+      install:
         - php composer.phar install
     - os: windows
       name: linux with installed yarn
       language: sh
-      install:
+      before_install:
         - choco install -y yarn
         - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
         - export PATH=/c/php:$PATH
         - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
         - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
         - wget http://getcomposer.org/composer.phar
+      install:
         - php composer.phar install
 
 cache:
   directories:
     - $HOME/.composer/cache/files
-script:
-  - composer install --optimize-autoloader --no-suggest -v
