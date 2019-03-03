@@ -16,6 +16,10 @@ matrix:
         - echo "" >> /c/composer/composer.bat
         - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
         - cat /c/composer/composer.bat
+        - echo "#!/bin/sh" > /c/composer/composer
+        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
+        - chmod +x /c/composer/composer
+        - cat  /c/composer/composer
     - os: windows
       name: windows with installed npm
       language: sh
@@ -31,6 +35,10 @@ matrix:
         - echo "" >> /c/composer/composer.bat
         - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
         - cat /c/composer/composer.bat
+        - echo "#!/bin/sh" > /c/composer/composer
+        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
+        - chmod +x /c/composer/composer
+        - cat  /c/composer/composer
     - os: windows
       name: windows with installed yarn and npm
       language: sh
@@ -46,6 +54,10 @@ matrix:
         - echo "" >> /c/composer/composer.bat
         - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
         - cat /c/composer/composer.bat
+        - echo "#!/bin/sh" > /c/composer/composer
+        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
+        - chmod +x /c/composer/composer
+        - cat  /c/composer/composer
     - os: windows
       name: linux with installed yarn
       language: sh
@@ -61,6 +73,10 @@ matrix:
         - echo "" >> /c/composer/composer.bat
         - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
         - cat /c/composer/composer.bat
+        - echo "#!/bin/sh" > /c/composer/composer
+        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
+        - chmod +x /c/composer/composer
+        - cat  /c/composer/composer
     - name: linux with installed npm (7.1)
       php: 7.1
       os: linux
