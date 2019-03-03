@@ -34,7 +34,7 @@ matrix:
       osx_image: xcode9.4
       install:
         - brew update
-        - brew tap homebrew/php
+        - brew tap homebrew/core
         - brew install composer
     - os: osx
       name: osx with installed npm
@@ -42,44 +42,48 @@ matrix:
       language: objective-c
       install:
         - brew update
-        - brew tap homebrew/php
-        - brew install composer npm
+        - brew tap homebrew/core
+        - brew install composer node
     - os: osx
       name: osx with installed yarn and yarn
       osx_image: xcode9.4
       language: objective-c
       install:
         - brew update
-        - brew tap homebrew/php
-        - brew install composer npm yarn
+        - brew tap homebrew/core
+        - brew install composer node yarn
     - os: osx
       name: osx with installed yarn
       osx_image: xcode9.4
       language: objective-c
       install:
         - brew update
-        - brew tap homebrew/php
+        - brew tap homebrew/core
         - brew install composer yarn
     - os: windows
       name: windows without yarn and npm
       language: shell
       install:
         - choco install -y composer
+        - refreshenv
     - os: windows
       name: windows with installed npm
       language: shell
       install:
         - choco install -y composer nodejs
+        - refreshenv
     - os: windows
       name: windows with installed yarn and npm
       language: shell
       install:
         - choco install -y composer nodejs yarn
+        - refreshenv
     - os: windows
       name: linux with installed yarn
       language: shell
       install:
         - choco install -y composer yarn
+        - refreshenv
 
 cache:
   directories:
