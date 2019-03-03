@@ -7,53 +7,77 @@ php:
 
 matrix:
   include:
-    - os: linux
+    - name: linux with installed npm
+      os: linux
       addons:
         apt:
           packages:
             - npm
     - os: linux
+      name: linux with installed npm and yarn
       addons:
         apt:
           packages:
             - npm
             - yarn
     - os: linux
+      name: linux with installed yarn
       addons:
         apt:
           packages:
             - yarn
     - os: linux
+      name: linux without yarn and npm
     - os: osx
+      name: osx without yarn and npm
+      language: objective-c
+      osx_image: xcode9.4
       install:
         - brew update
         - brew tap homebrew/php
         - brew install composer
     - os: osx
+      name: osx with installed npm
+      osx_image: xcode9.4
+      language: objective-c
       install:
         - brew update
         - brew tap homebrew/php
         - brew install composer npm
     - os: osx
+      name: osx with installed yarn and yarn
+      osx_image: xcode9.4
+      language: objective-c
       install:
         - brew update
         - brew tap homebrew/php
         - brew install composer npm yarn
     - os: osx
+      name: osx with installed yarn
+      osx_image: xcode9.4
+      language: objective-c
       install:
         - brew update
         - brew tap homebrew/php
         - brew install composer yarn
     - os: windows
+      name: windows without yarn and npm
+      language: shell
       install:
         - choco install -y composer
     - os: windows
+      name: windows with installed npm
+      language: shell
       install:
         - choco install -y composer npm
     - os: windows
+      name: windows with installed yarn and npm
+      language: shell
       install:
         - choco install -y composer npm yarn
     - os: windows
+      name: linux with installed yarn
+      language: shell
       install:
         - choco install -y composer yarn
 
