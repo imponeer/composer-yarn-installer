@@ -212,4 +212,6 @@ before_script:
   - chmod +x ./tests/run.sh
 
 script:
-  - pushd ./tests/ && run.sh && popd
+  - pushd ./tests/
+  - run.sh
+  - popd
