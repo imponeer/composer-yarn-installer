@@ -59,7 +59,7 @@ matrix:
         - chmod +x /c/composer/composer
         - cat  /c/composer/composer
     - os: windows
-      name: linux with installed yarn
+      name: windows with installed yarn
       language: sh
       before_install:
         - choco install -y yarn
