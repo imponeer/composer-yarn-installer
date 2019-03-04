@@ -213,5 +213,6 @@ before_script:
 
 script:
   - pushd ./tests/
-  - run.sh
+  - ls
+  - ./run.sh
   - popd
