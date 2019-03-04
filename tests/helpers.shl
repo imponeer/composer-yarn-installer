@@ -87,7 +87,11 @@ function detectOS() {
 			echo osx
 		;;
 		CYGWIN*)
+			echo win
+		;;
 		MINGW*)
+			echo win
+		;;
 		MSYS_NT*)
 			echo win
 		;;
