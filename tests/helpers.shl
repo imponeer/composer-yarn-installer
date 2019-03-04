@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+#####################################################
+# Creates project
+#
+# @param string $1 force-local "true" or "false"
+#####################################################
+function createProject() {
+	if [ ! -d ${DIR}/.tmp ]; then
+		mkdir ${DIR}/.tmp
+	fi;
+	TMPDIR=${DIR}/.tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+	mkdir $TMPDIR
+	pushd $TMPDIR
+		writeComposerJSON $1
+		composer install --no-interaction -vvv
+	popd
+	echo $TMPDIR
+}
+
+#####################################################
+# Writes generated composer.json file
+#
+# @param string $1 force-local "true" or "false"
+#####################################################
+function writeComposerJSON() {
+	FORCE_LOCAL=$1
+	echo '{' > composer.json
+	echo '	"name": "test-global",' >> composer.json
+	echo '	"description": "Just a dummy composer plugin for testing",' >> composer.json
+	echo '	"license": "PDDL-1.0",' >> composer.json
+	echo '	"type": "project",' >> composer.json
+	echo '	"authors": [' >> composer.json
+	echo '		{' >> composer.json
+	echo '			"name": "Some bot",' >> composer.json
+	echo '			"email": "Get.it@i.am.not.real"' >> composer.json
+	echo '		}' >> composer.json
+	echo '	],' >> composer.json
+	echo '	"repositories": [' >> composer.json
+	echo '		{' >> composer.json
+	echo '			"type": "path",' >> composer.json
+	echo "			\"url\": \"$DIR\"," >> composer.json
+	echo '			"options": {' >> composer.json
+	echo '				"symlink": false' >> composer.json
+	echo '			}' >> composer.json
+	echo '		}' >> composer.json
+	echo '	],' >> composer.json
+	echo '	"require": {' >> composer.json
+	echo '		"imponeer/composer-yarn-installer": "*"' >> composer.json
+	echo '	},' >> composer.json
+	echo '	"minimum-stability": "dev",' >> composer.json
+	echo '	"prefer-stable": false,' >> composer.json
+	echo '	"extra": {' >> composer.json
+	echo '		"mouf": {' >> composer.json
+	echo '			"nodejs": {' >> composer.json
+	echo "				\"forceLocal\": $FORCE_LOCAL" >> composer.json
+	echo '			}' >> composer.json
+	echo '		}' >> composer.json
+	echo '	}' >> composer.json
+	echo '}' >> composer.json
+}
