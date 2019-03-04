@@ -13,7 +13,8 @@ function createProject() {
 	mkdir $TMPDIR
 	pushd $TMPDIR
 		writeComposerJSON $1
-		composer install --no-interaction -vvv
+		composer install --no-interaction -q
+		assertEquals $? 0
 	popd
 	echo $TMPDIR
 }
@@ -58,4 +59,92 @@ function writeComposerJSON() {
 	echo '		}' >> composer.json
 	echo '	}' >> composer.json
 	echo '}' >> composer.json
+}
+
+#####################################################
+# Checks if app global installed
+#
+# @param string $1 app to check
+#####################################################
+function isGlobalInstalled() {
+	command -v $1 >/dev/null 2>&1
+	if [ "$?" == "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+
+#####################################################
+# Detects OS
+#####################################################
+function detectOS() {
+	case "$(uname -s)" in
+		Linux*)
+			echo linux
+		;;
+		Darwin*)
+			echo osx
+		;;
+		CYGWIN*)
+		MINGW*)
+		MSYS_NT*)
+			echo win
+		;;
+	esac
+}
+
+#####################################################
+# Adds file extension if needed by OS
+#
+# @param string $1 file
+#####################################################
+function addFileExtensionIfNeeded() {
+	FILE=$1
+	case "$(detectOS)" in
+		windows)
+			echo $FILE.bat
+		;;
+		*)
+			echo $FILE
+		;;
+	esac
+}
+
+#####################################################
+# Asserts if file exists
+#
+# @param string $1 file
+#####################################################
+function assertFileExist() {
+	assertTrue [ -f "$1" ]
+}
+
+#####################################################
+# Asserts if file not exists
+#
+# @param string $1 file
+#####################################################
+function assertFileNotExist() {
+	assertFalse [ -f "$1" ]
+}
+
+#####################################################
+# Asserts if file exists with auto file extension
+# guessing
+#
+# @param string $1 file
+#####################################################
+function autoAssertFileExist() {
+	assertFileExist $(addFileExtensionIfNeeded $1)
+}
+
+#####################################################
+# Asserts if file exists with auto file extension
+# guessing
+#
+# @param string $1 file
+#####################################################
+function autoAssertFileNotExist() {
+	assertFileNotExist $(addFileExtensionIfNeeded $1)
 }

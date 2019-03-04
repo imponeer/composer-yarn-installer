@@ -16,10 +16,24 @@ source ${DIR}/helpers.shl
 
 function testForce() {
 	TEST_PATH=$(createProject "true")
+	autoAssertFileExist "$TEST_PATH/vendor/bin/yarn"
+	autoAssertFileExist "$TEST_PATH/vendor/bin/npm"
+	autoAssertFileExist "$TEST_PATH/vendor/bin/node"
 }
 
 function testAuto() {
+	NPM_INSTALLED=$(isGlobalInstalled npm)
 	TEST_PATH=$(createProject "false")
+	if [ "$NPM_INSTALLED" == "1" ]; then
+		autoAssertFileExist "$TEST_PATH/vendor/bin/npm"
+		autoAssertFileExist "$TEST_PATH/vendor/bin/node"
+		autoAssertFileExist "$TEST_PATH/vendor/bin/yarn"
+	else
+		autoAssertFileNotExist "$TEST_PATH/vendor/bin/npm"
+		autoAssertFileNotExist "$TEST_PATH/vendor/bin/node"
+		autoAssertFileNotExist "$TEST_PATH/vendor/bin/yarn"
+		assertEquals $(isGlobalInstalled yarn) "1"
+	fi;
 }
 
 #function testTearDown() {
