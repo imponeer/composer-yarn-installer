@@ -157,6 +157,7 @@ install:
 
 before_script:
   - composer -V
+  - chmod +x ./tests/run.sh
 
 script:
   - ./tests/run.sh
