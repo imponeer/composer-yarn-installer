@@ -21,7 +21,8 @@ function createProject() {
 function assertInstallProject() {
 	pushd $1 > /dev/null
 		composer install --no-interaction -q
-		assertEquals $? 0
+		local out=$?
+		assertEqual "$out" "0"
 	popd > /dev/null
 }
 
@@ -128,7 +129,7 @@ function addFileExtensionIfNeeded() {
 #####################################################
 function assertFileExist() {
 	FILE=$1
-	assertTrue [ -f "$FILE" ]
+	assertEqual [ -f "$FILE" ] 0
 }
 
 #####################################################
@@ -138,7 +139,7 @@ function assertFileExist() {
 #####################################################
 function assertFileNotExist() {
 	FILE=$1
-	assertFalse [ -f "$FILE" ]
+	assertNotEqual [ -f "$FILE" ] 0
 }
 
 #####################################################
@@ -150,7 +151,6 @@ function assertFileNotExist() {
 function autoAssertFileExist() {
 	FILE=$1
 	PFILE=$(addFileExtensionIfNeeded "$FILE")
-	echo ">>> $PFILE"
 	assertFileExist "$PFILE"
 }
 
@@ -163,6 +163,5 @@ function autoAssertFileExist() {
 function autoAssertFileNotExist() {
 	FILE=$1
 	PFILE=$(addFileExtensionIfNeeded "$FILE")
-	echo ">>> $PFILE"
 	assertFileNotExist "$PFILE"
 }

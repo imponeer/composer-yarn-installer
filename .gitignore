@@ -1,5 +1,5 @@
 /vendor/
 .idea
 composer.lock
-.bunit
+.bashunit.bash
 .tmp

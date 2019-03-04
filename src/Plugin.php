@@ -133,10 +133,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	{
 		$process = new Process($cmd, $path);
 		$process->mustRun(function ($type, $buffer) use ($io) {
-			if (Process::ERR === $type) {
-				$io->writeError($buffer);
-			} else {
-				$io->write($buffer);
+			if ($io->isVerbose()) {
+				if (Process::ERR === $type) {
+					$io->writeError($buffer);
+				} else {
+					$io->write($buffer);
+				}
 			}
 		});
 	}
