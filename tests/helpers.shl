@@ -14,25 +14,13 @@ function createProject() {
 }
 
 #####################################################
-# Creates project
-#
-# @param string $1 project path
-#####################################################
-function assertInstallProject() {
-	pushd $1 > /dev/null
-		composer install --no-interaction -q
-		local out=$?
-		assertEqual "$out" "0"
-	popd > /dev/null
-}
-
-#####################################################
 # Writes generated composer.json file
 #
 # @param string $1 force-local "true" or "false"
 #####################################################
 function writeComposerJSON() {
 	local FORCE_LOCAL=$1
+	local PROJECT_PATH=$(dirname "$DIR")/
 	echo '{' > composer.json
 	echo '	"name": "test-global",' >> composer.json
 	echo '	"description": "Just a dummy composer plugin for testing",' >> composer.json
@@ -47,7 +35,7 @@ function writeComposerJSON() {
 	echo '	"repositories": [' >> composer.json
 	echo '		{' >> composer.json
 	echo '			"type": "path",' >> composer.json
-	echo "			\"url\": \"$DIR\"," >> composer.json
+	echo "			\"url\": \"$PROJECT_PATH\"," >> composer.json
 	echo '			"options": {' >> composer.json
 	echo '				"symlink": false' >> composer.json
 	echo '			}' >> composer.json
@@ -64,7 +52,13 @@ function writeComposerJSON() {
 	echo "				\"forceLocal\": $FORCE_LOCAL" >> composer.json
 	echo '			}' >> composer.json
 	echo '		}' >> composer.json
-	echo '	}' >> composer.json
+	echo '	},' >> composer.json
+	echo '  "config": {' >> composer.json
+	echo '      "preferred-install": {' >> composer.json
+    echo '			"imponeer/composer-yarn-installer": "source",' >> composer.json
+    echo '          "*": "dist"' >> composer.json
+    echo '		}' >> composer.json
+	echo '  }' >> composer.json
 	echo '}' >> composer.json
 }
 
@@ -94,13 +88,13 @@ function detectOS() {
 			echo osx
 		;;
 		CYGWIN*)
-			echo win
+			echo windows
 		;;
 		MINGW*)
-			echo win
+			echo windows
 		;;
 		MSYS_NT*)
-			echo win
+			echo windows
 		;;
 	esac
 }
@@ -112,56 +106,9 @@ function detectOS() {
 #####################################################
 function addFileExtensionIfNeeded() {
 	FILE=$1
-	case "$(detectOS)" in
-		windows)
-			echo $FILE.bat
-		;;
-		*)
-			echo $FILE
-		;;
-	esac
-}
-
-#####################################################
-# Asserts if file exists
-#
-# @param string $1 file
-#####################################################
-function assertFileExist() {
-	FILE=$1
-	assertEqual [ -f "$FILE" ] 0
-}
-
-#####################################################
-# Asserts if file not exists
-#
-# @param string $1 file
-#####################################################
-function assertFileNotExist() {
-	FILE=$1
-	assertNotEqual [ -f "$FILE" ] 0
-}
-
-#####################################################
-# Asserts if file exists with auto file extension
-# guessing
-#
-# @param string $1 file
-#####################################################
-function autoAssertFileExist() {
-	FILE=$1
-	PFILE=$(addFileExtensionIfNeeded "$FILE")
-	assertFileExist "$PFILE"
-}
-
-#####################################################
-# Asserts if file exists with auto file extension
-# guessing
-#
-# @param string $1 file
-#####################################################
-function autoAssertFileNotExist() {
-	FILE=$1
-	PFILE=$(addFileExtensionIfNeeded "$FILE")
-	assertFileNotExist "$PFILE"
+	if [ $(detectOS) == "windows" ]; then
+		echo "$FILE.bat"
+	else
+		echo "$FILE"
+	fi;
 }

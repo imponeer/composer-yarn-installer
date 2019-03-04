@@ -56,7 +56,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
 		$binDir = $composer->getConfig()->get('bin-dir');
 
-		if (file_exists($settings['targetDir'])) {
+		if (file_exists($settings['targetDir']) || $settings['forceLocal']) {
 			$path = $settings['targetDir'];
 			$is_local = true;
 		} else {
@@ -66,18 +66,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		}
 		$this->verboseWrite('Found node path:' . $path, $io);
 
-		$this->verboseWrite('Executing: npm update', $io);
-		if (Environment::isWindows()) {
-			$this->exec('npm update', $path, $io);
+		if ($is_local) {
+			$this->verboseWrite('Executing: npm install yarn', $io);
+			if (Environment::isWindows()) {
+				$this->exec('.\\npm install yarn --no-save --no-package-lock', $path, $io);
+			} else {
+				$this->exec('./npm install yarn --no-save --no-package-lock', $path, $io);
+			}
 		} else {
-			$this->exec('./bin/npm update', $path, $io);
-		}
-
-		$this->verboseWrite('Executing: npm install yarn', $io);
-		if (Environment::isWindows()) {
-			$this->exec('npm install yarn --no-save', $path, $io);
-		} else {
-			$this->exec('./bin/npm install yarn --no-save', $path, $io);
+			$this->verboseWrite('Executing: npm install yarn', $io);
+			$this->exec('npm install -g yarn --no-save --no-package-lock', $path, $io);
 		}
 
 		$this->createBinScripts($binDir, $path, $is_local);
