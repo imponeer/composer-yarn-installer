@@ -6,17 +6,23 @@
 # @param string $1 force-local "true" or "false"
 #####################################################
 function createProject() {
-	if [ ! -d ${DIR}/.tmp ]; then
-		mkdir ${DIR}/.tmp
-	fi;
-	TMPDIR=${DIR}/.tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-	mkdir $TMPDIR
-	pushd $TMPDIR
+	TMPDIR=$(mktemp -d)
+	pushd $TMPDIR > /dev/null
 		writeComposerJSON $1
+	popd > /dev/null
+	echo $TMPDIR
+}
+
+#####################################################
+# Creates project
+#
+# @param string $1 project path
+#####################################################
+function assertInstallProject() {
+	pushd $1 > /dev/null
 		composer install --no-interaction -q
 		assertEquals $? 0
-	popd
-	echo $TMPDIR
+	popd > /dev/null
 }
 
 #####################################################
@@ -25,7 +31,7 @@ function createProject() {
 # @param string $1 force-local "true" or "false"
 #####################################################
 function writeComposerJSON() {
-	FORCE_LOCAL=$1
+	local FORCE_LOCAL=$1
 	echo '{' > composer.json
 	echo '	"name": "test-global",' >> composer.json
 	echo '	"description": "Just a dummy composer plugin for testing",' >> composer.json
@@ -121,7 +127,8 @@ function addFileExtensionIfNeeded() {
 # @param string $1 file
 #####################################################
 function assertFileExist() {
-	assertTrue [ -f "$1" ]
+	FILE=$1
+	assertTrue [ -f "$FILE" ]
 }
 
 #####################################################
@@ -130,7 +137,8 @@ function assertFileExist() {
 # @param string $1 file
 #####################################################
 function assertFileNotExist() {
-	assertFalse [ -f "$1" ]
+	FILE=$1
+	assertFalse [ -f "$FILE" ]
 }
 
 #####################################################
@@ -140,7 +148,10 @@ function assertFileNotExist() {
 # @param string $1 file
 #####################################################
 function autoAssertFileExist() {
-	assertFileExist $(addFileExtensionIfNeeded $1)
+	FILE=$1
+	PFILE=$(addFileExtensionIfNeeded "$FILE")
+	echo ">>> $PFILE"
+	assertFileExist "$PFILE"
 }
 
 #####################################################
@@ -150,5 +161,8 @@ function autoAssertFileExist() {
 # @param string $1 file
 #####################################################
 function autoAssertFileNotExist() {
-	assertFileNotExist $(addFileExtensionIfNeeded $1)
+	FILE=$1
+	PFILE=$(addFileExtensionIfNeeded "$FILE")
+	echo ">>> $PFILE"
+	assertFileNotExist "$PFILE"
 }
