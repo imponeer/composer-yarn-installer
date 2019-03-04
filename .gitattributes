@@ -3,3 +3,8 @@
 
 # Declare files that will always have LF line endings on checkout.
 *.php text eol=lf
+
+# Ignore files for export
+tests/ export-ignore
+.travis.yml export-ignore
+.editorconfig export-ignore

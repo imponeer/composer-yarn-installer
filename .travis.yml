@@ -147,6 +147,58 @@ matrix:
         - brew update
         - brew tap homebrew/core
         - brew install composer yarn
+    - name: linux with installed npm (7.2)
+      php: 7.2
+      os: linux
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: linux
+      name: linux with installed npm and yarn (7.2)
+      php: 7.2
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: linux
+      name: linux with installed yarn (7.2)
+      php: 7.2
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+    - os: linux
+      name: linux without yarn and npm (7.2)
+      php: 7.2
+    - name: linux with installed npm (7.3)
+      php: 7.3
+      os: linux
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: linux
+      name: linux with installed npm and yarn (7.3)
+      php: 7.3
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+      addons:
+        apt:
+          packages:
+            - npm
+    - os: linux
+      name: linux with installed yarn (7.3)
+      php: 7.3
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+    - os: linux
+      name: linux without yarn and npm (7.3)
+      php: 7.3
 
 cache:
   directories:
