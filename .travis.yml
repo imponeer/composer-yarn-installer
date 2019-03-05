@@ -205,11 +205,11 @@ cache:
     - $HOME/.composer/cache/files
 
 install:
-  - wget https://github.com/rafritts/bunit/archive/v1.0.0.zip
-
-before_script:
   - composer -V
-  - chmod +x ./tests/run.sh
 
 script:
-  - ./tests/run.sh
+  - cd /tmp
+  - mkdir test
+  - cd test
+  - composer init --name=test/test --description="Just a test package" --author="Test <someone@somewhere.somehow>" --type=project --homepage=http://impresscms.org --license=MIT --stability=dev --require="imponeer/composer-yarn-installer=*" -q
+  - composer install --no-dev

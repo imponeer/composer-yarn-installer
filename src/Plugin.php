@@ -8,10 +8,8 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
+use Composer\Util\Platform;
 use MatthiasMullie\PathConverter\Converter;
-use Mouf\NodeJsInstaller\Environment;
-use Mouf\NodeJsInstaller\NodeJsInstaller;
-use Symfony\Component\Process\Process;
 
 /**
  * Defines plugin functionality
@@ -27,8 +25,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return array(
-			ScriptEvents::POST_INSTALL_CMD => 'onNodeDownload',
-			ScriptEvents::POST_UPDATE_CMD => 'onNodeDownload'
+			ScriptEvents::PRE_INSTALL_CMD => 'onPreInstall',
+			ScriptEvents::PRE_UPDATE_CMD => 'onPreUpdate',
+			Events::ON_YARN_INSTALL => 'onYarnDownload'
 		);
 	}
 
@@ -44,67 +43,42 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	}
 
 	/**
-	 * Installs yarn after node downloaded and installed
+	 * Event that triggers before install
 	 *
 	 * @param Event $event
 	 */
-	public function onNodeDownload(Event $event)
+	public function onPreInstall(Event $event)
 	{
-		$composer = $event->getComposer();
-		$settings = $this->getSettings($composer);
-		$io = $event->getIO();
-
-		$binDir = $composer->getConfig()->get('bin-dir');
-
-		if (file_exists($settings['targetDir']) || $settings['forceLocal']) {
-			$path = $settings['targetDir'];
-			$is_local = true;
-		} else {
-			$nodeJsInstaller = new NodeJsInstaller($io);
-			$path = $nodeJsInstaller->getGlobalInstallPath('npm');
-			$is_local = false;
-		}
-		$this->verboseWrite('Found node path:' . $path, $io);
-
-		if ($is_local) {
-			$this->verboseWrite('Executing: npm install yarn', $io);
-			if (Environment::isWindows()) {
-				$this->exec('.\\npm install yarn --no-save --no-package-lock', $path, $io);
-			} else {
-				$this->exec('./npm install yarn --no-save --no-package-lock', $path, $io);
-			}
-		} else {
-			$this->verboseWrite('Executing: npm install yarn', $io);
-			$this->exec('npm install -g yarn --no-save --no-package-lock', $path, $io);
-		}
-
-		$this->createBinScripts($binDir, $path, $is_local);
+		$event->getComposer()->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 	}
 
 	/**
-	 * Gets settings
+	 * Event that triggers before update
 	 *
-	 * @param Composer $composer Current composer instance
-	 *
-	 * @return array
+	 * @param Event $event
 	 */
-	protected function getSettings(Composer $composer)
+	public function onPreUpdate(Event $event)
 	{
-		$settings = array(
-			'targetDir' => 'vendor/nodejs/nodejs',
-			'forceLocal' => false,
-			'includeBinInPath' => false,
-		);
+		$event->getComposer()->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
+	}
 
+	/**
+	 * Installs yarn
+	 *
+	 * @param Event $event
+	 */
+	public function onYarnDownload(Event $event)
+	{
+		$composer = $event->getComposer();
+		$io = $event->getIO();
 		$extra = $composer->getPackage()->getExtra();
+		$binDir = $composer->getConfig()->get('bin-dir');
+		$version = isset($extra['yarn_version']) ? $extra['yarn_version'] : YarnInstaller::VERSION_LATEST;
 
-		if (isset($extra['mouf']['nodejs'])) {
-			$rootSettings = $extra['mouf']['nodejs'];
-			$settings = array_merge($settings, $rootSettings);
-			$settings['targetDir'] = trim($settings['targetDir'], '/\\');
-		}
+		$installer = new YarnInstaller($io);
+		$installer->download($version);
 
-		return $settings;
+		//$this->createBinScripts($binDir, $path, $is_local);
 	}
 
 	/**
@@ -121,27 +95,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	}
 
 	/**
-	 * Execute command
-	 *
-	 * @param string $cmd Command to execute
-	 * @param string $path Path where to run
-	 * @param IOInterface $io InputOutput interface
-	 */
-	protected function exec($cmd, $path, IOInterface $io)
-	{
-		$process = new Process($cmd, $path);
-		$process->mustRun(function ($type, $buffer) use ($io) {
-			if ($io->isVerbose()) {
-				if (Process::ERR === $type) {
-					$io->writeError($buffer);
-				} else {
-					$io->write($buffer);
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create bin scripts
 	 *
 	 * @param string $binDir vendor/bin dir
@@ -150,7 +103,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	protected function createBinScripts($binDir, $fullTargetDir, $isLocal)
 	{
-		if (!Environment::isWindows()) {
+		if (!Platform::isWindows()) {
 			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarn', 'node_modules/yarn/bin/yarn', $isLocal);
 			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarnpkg', 'node_modules/yarn/bin/yarnpkg', $isLocal);
 			chmod($binDir . '/yarn', 0755);
@@ -222,7 +175,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 			realpath($binPath)
 		);
 		$ret = $converter->convert($filename);
-		if (Environment::isWindows()) {
+		if (Platform::isWindows()) {
 			$ret = str_replace('/', '\\', $ret);
 		}
 		return $ret;

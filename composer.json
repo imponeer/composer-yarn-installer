@@ -3,9 +3,10 @@
 	"description": "Composer plugin to install yarn in vendor/",
 	"type": "composer-plugin",
 	"require": {
-		"mouf/nodejs-installer": "~1.0",
+		"php": ">=7.0",
+		"ext-Phar": ">=2.0",
+		"ext-json": ">=1.6",
 		"composer-plugin-api": "^1.1",
-		"php": ">=5.4",
 		"matthiasmullie/path-converter": "^1.1"
 	},
 	"license": "MIT",
@@ -26,18 +27,14 @@
 		]
 	},
 	"require-dev": {
-		"php": ">=7.1",
-		"ext-json": "*",
 		"composer/composer": "*"
 	},
 	"config": {
-		"preferred-install": "dist",
 		"sort-packages": true,
 		"optimize-autoloader": true
 	},
 	"archive": {
 		"exclude": [
-			"/tests/",
 			".travis.yml",
 			".editorconfig",
 			".gitattributes",

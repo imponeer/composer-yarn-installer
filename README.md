@@ -16,7 +16,11 @@ composer require imponeer/composer-yarn-installer
 
 ## Configuration
 
-Because this Composer plugin is based on [mouf/nodejs-installer](https://packagist.org/packages/mouf/nodejs-installer) you should see for all available options on that plugin installer.
+It's possible a bit to configure plugin. For that some configuration options can be added to composer.json `extra` section.
+
+| Key | Possible values | Default | What does? |
+|-----|-----------------|---------|-------------|
+| yarn_version | rc<br />latest<br />nighty<br />MAJOR.MINOR.REVISION | latest | Specifies what yarn version should be installed |
 
 ## How to contribute?
 
