@@ -54,7 +54,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		$this->composer = $composer;
 		$this->io = $io;
 
-		if (!YarnInstaller::isInstalled()) {
+		if (!YarnInstaller::isInstalled($io)) {
 			$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 		}
 	}

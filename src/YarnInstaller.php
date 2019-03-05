@@ -85,11 +85,13 @@ class YarnInstaller
 	/**
 	 * Checks if is installed
 	 *
+	 * @param IOInterface $IO IOInterface
+	 *
 	 * @return bool
 	 */
-	public static function isInstalled(): bool
+	public static function isInstalled(IOInterface $IO): bool
 	{
-		$instance = new self();
+		$instance = new self($IO);
 		return file_exists(
 			$instance->getInstallPath() . 'yarn'
 		);
