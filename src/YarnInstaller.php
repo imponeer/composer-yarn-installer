@@ -83,6 +83,19 @@ class YarnInstaller
 	}
 
 	/**
+	 * Checks if is installed
+	 *
+	 * @return bool
+	 */
+	public static function isInstalled(): bool
+	{
+		$instance = new self();
+		return file_exists(
+			$instance->getInstallPath() . 'yarn'
+		);
+	}
+
+	/**
 	 * Gets download link
 	 *
 	 * @param string $version String

@@ -3,7 +3,6 @@
 namespace Imponeer\ComposerYarnInstaller;
 
 use Composer\Composer;
-use Composer\EventDispatcher\Event;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
@@ -38,8 +37,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return array(
-			ScriptEvents::POST_INSTALL_CMD => 'onPreInstall',
-			ScriptEvents::POST_UPDATE_CMD => 'onPreUpdate',
+			ScriptEvents::PRE_INSTALL_CMD => 'onPreInstall',
+			ScriptEvents::PRE_UPDATE_CMD => 'onPreUpdate',
 			Events::ON_YARN_INSTALL => 'onYarnDownload'
 		);
 	}
@@ -54,34 +53,32 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	{
 		$this->composer = $composer;
 		$this->io = $io;
+
+		if (!YarnInstaller::isInstalled()) {
+			$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
+		}
 	}
 
 	/**
 	 * Event that triggers before install
-	 *
-	 * @param Event $event
-	 */
-	public function onPreInstall(Event $event)
+ */
+	public function onPreInstall()
 	{
 		$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 	}
 
 	/**
 	 * Event that triggers before update
-	 *
-	 * @param Event $event
 	 */
-	public function onPreUpdate(Event $event)
+	public function onPreUpdate()
 	{
 		$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 	}
 
 	/**
 	 * Installs yarn
-	 *
-	 * @param Event $event
 	 */
-	public function onYarnDownload(Event $event)
+	public function onYarnDownload()
 	{
 		$extra = $this->composer->getPackage()->getExtra();
 		$binDir = $this->composer->getConfig()->get('bin-dir');
