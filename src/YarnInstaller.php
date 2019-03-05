@@ -53,10 +53,12 @@ class YarnInstaller
 	 *
 	 * @param string $version Version to download
 	 *
+	 * @return string
+	 *@throws FileCantBeDownloadException
+	 *
 	 * @throws BadVersionFormatException
-	 * @throws FileCantBeDownloadException
 	 */
-	public function download(string $version = self::VERSION_LATEST)
+	public function download(string $version = self::VERSION_LATEST): string
 	{
 		$url = $this->getDownloadURL($version);
 		$tmpfname = tempnam(sys_get_temp_dir(), "yarn_installer");
@@ -64,13 +66,20 @@ class YarnInstaller
 		if (!$downlader->copy(parse_url($url, PHP_URL_HOST), $url, $tmpfname)) {
 			throw new FileCantBeDownloadException();
 		}
+		$tmp_install_path = $this->getInstallPath() . 'tmp';
+		$filesystem = new Filesystem();
+		if (file_exists($tmp_install_path)) {
+			$filesystem->removeDirectory($tmp_install_path);
+		}
+		$this->uncompress($tmpfname, $tmp_install_path);
 		$install_path = $this->getInstallPath() . 'yarn';
 		if (file_exists($install_path)) {
-			$filesystem = new Filesystem();
 			$filesystem->removeDirectory($install_path);
 		}
-		$this->uncompress($tmpfname, $install_path);
-		@unlink($tmpfname);
+		$filesystem->copyThenRemove($this->getFirstDirectory($tmp_install_path), $install_path);
+		$filesystem->removeDirectory($tmp_install_path);
+
+		return $install_path;
 	}
 
 	/**
@@ -124,6 +133,23 @@ class YarnInstaller
 	{
 		$phar = new \PharData($src);
 		return $phar->extractTo($dst);
+	}
+
+	/**
+	 * Gets first directory in path
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	protected function getFirstDirectory(string $path): string
+	{
+		foreach (new \DirectoryIterator($path) as $fileinfo) {
+			if ($fileinfo->isDot()) {
+				continue;
+			}
+			return $fileinfo->getPathname();
+		}
 	}
 
 }

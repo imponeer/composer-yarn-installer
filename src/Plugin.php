@@ -3,19 +3,32 @@
 namespace Imponeer\ComposerYarnInstaller;
 
 use Composer\Composer;
+use Composer\EventDispatcher\Event;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
+use Composer\Util\Filesystem;
 use Composer\Util\Platform;
-use MatthiasMullie\PathConverter\Converter;
 
 /**
  * Defines plugin functionality
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
+	/**
+	 * Current composer instance
+	 *
+	 * @var Composer
+	 */
+	protected $composer;
+
+	/**
+	 * Current io
+	 *
+	 * @var IOInterface
+	 */
+	protected $io;
 
 	/**
 	 * Gets all events that can be subscribed with this plugin
@@ -25,8 +38,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return array(
-			ScriptEvents::PRE_INSTALL_CMD => 'onPreInstall',
-			ScriptEvents::PRE_UPDATE_CMD => 'onPreUpdate',
+			ScriptEvents::POST_INSTALL_CMD => 'onPreInstall',
+			ScriptEvents::POST_UPDATE_CMD => 'onPreUpdate',
 			Events::ON_YARN_INSTALL => 'onYarnDownload'
 		);
 	}
@@ -39,7 +52,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	public function activate(Composer $composer, IOInterface $io)
 	{
-
+		$this->composer = $composer;
+		$this->io = $io;
 	}
 
 	/**
@@ -49,7 +63,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	public function onPreInstall(Event $event)
 	{
-		$event->getComposer()->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
+		$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 	}
 
 	/**
@@ -59,7 +73,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	public function onPreUpdate(Event $event)
 	{
-		$event->getComposer()->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
+		$this->composer->getEventDispatcher()->dispatch(Events::ON_YARN_INSTALL);
 	}
 
 	/**
@@ -69,28 +83,26 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	public function onYarnDownload(Event $event)
 	{
-		$composer = $event->getComposer();
-		$io = $event->getIO();
-		$extra = $composer->getPackage()->getExtra();
-		$binDir = $composer->getConfig()->get('bin-dir');
+		$extra = $this->composer->getPackage()->getExtra();
+		$binDir = $this->composer->getConfig()->get('bin-dir');
 		$version = isset($extra['yarn_version']) ? $extra['yarn_version'] : YarnInstaller::VERSION_LATEST;
 
-		$installer = new YarnInstaller($io);
-		$installer->download($version);
+		$installer = new YarnInstaller($this->io);
+		$path = $installer->download($version);
 
-		//$this->createBinScripts($binDir, $path, $is_local);
+		$this->verboseWrite("Creating bin links...");
+		$this->createBinScripts($binDir, $path . DIRECTORY_SEPARATOR . 'bin', true);
 	}
 
 	/**
 	 * Writes message when verbose mode is enabled.
 	 *
 	 * @param string $message Message to write
-	 * @param IOInterface $io InputOutput interface
 	 */
-	private function verboseWrite($message, IOInterface $io)
+	private function verboseWrite($message)
 	{
-		if ($io->isVerbose()) {
-			$io->write($message);
+		if ($this->io->isVerbose()) {
+			$this->io->write($message);
 		}
 	}
 
@@ -103,9 +115,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	 */
 	protected function createBinScripts($binDir, $fullTargetDir, $isLocal)
 	{
+		if (!file_exists($binDir)) {
+			mkdir($binDir);
+		}
 		if (!Platform::isWindows()) {
-			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarn', 'node_modules/yarn/bin/yarn', $isLocal);
-			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarnpkg', 'node_modules/yarn/bin/yarnpkg', $isLocal);
+			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarn', 'yarn', $isLocal);
+			$this->writeShLinkScript($binDir, $fullTargetDir, 'yarnpkg', 'yarnpkg', $isLocal);
 			chmod($binDir . '/yarn', 0755);
 			chmod($binDir . '/yarnpkg', 0755);
 		} else {
@@ -170,11 +185,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		if (!$isLocal) {
 			return $fullTargetDir . DIRECTORY_SEPARATOR . $filename;
 		}
-		$converter = new Converter(
-			realpath($fullTargetDir),
-			realpath($binPath)
-		);
-		$ret = $converter->convert($filename);
+		$fs = new Filesystem();
+		$ret = $fs->findShortestPath($binPath, $fullTargetDir, true) . DIRECTORY_SEPARATOR . basename($filename);
 		if (Platform::isWindows()) {
 			$ret = str_replace('/', '\\', $ret);
 		}

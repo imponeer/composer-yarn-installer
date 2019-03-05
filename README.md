@@ -4,7 +4,7 @@
 
 # Composer Yarn Installer
 
-Composer plugin that installs [Yarn](https://yarnpkg.com/) to /vendor/bin path if needed.
+Composer plugin that installs [Yarn](https://yarnpkg.com/) to /vendor/bin path.
 
 ## Usage
  

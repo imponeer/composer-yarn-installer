@@ -33,6 +33,9 @@
 		"sort-packages": true,
 		"optimize-autoloader": true
 	},
+	"suggest": {
+		"mouf/nodejs-installer": "If you don't have NodeJS installed, use this package"
+	},
 	"archive": {
 		"exclude": [
 			".travis.yml",

@@ -3,25 +3,7 @@ language: php
 matrix:
   include:
     - os: windows
-      name: windows without yarn and npm
-      language: sh
-      before_install:
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-        - cat /c/composer/composer.bat
-        - echo "#!/bin/sh" > /c/composer/composer
-        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
-        - chmod +x /c/composer/composer
-        - cat  /c/composer/composer
-    - os: windows
-      name: windows with installed npm
+      name: windows (7.2.15)
       language: sh
       before_install:
         - choco install -y nodejs
@@ -39,83 +21,65 @@ matrix:
         - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
         - chmod +x /c/composer/composer
         - cat  /c/composer/composer
-    - os: windows
-      name: windows with installed yarn and npm
-      language: sh
-      before_install:
-        - choco install -y nodejs yarn
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-        - cat /c/composer/composer.bat
-        - echo "#!/bin/sh" > /c/composer/composer
-        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
-        - chmod +x /c/composer/composer
-        - cat  /c/composer/composer
-    - os: windows
-      name: windows with installed yarn
-      language: sh
-      before_install:
-        - choco install -y yarn
-        - choco install php -y --version 7.2.15 --package-parameters='"/InstallDir:C:\php"'
-        - export PATH=/c/php:/c/composer:$PATH
-        - sed -i 's/;extension=openssl/extension=openssl/g' /c/php/php.ini
-        - sed -i 's/;extension=mbstring/extension=mbstring/g' /c/php/php.ini
-        - mkdir /c/composer
-        - wget -O /c/composer/composer.phar http://getcomposer.org/composer.phar
-        - echo "@echo off" > /c/composer/composer.bat
-        - echo "" >> /c/composer/composer.bat
-        - echo "php c:\\composer\\composer.phar %*" >> /c/composer/composer.bat
-        - cat /c/composer/composer.bat
-        - echo "#!/bin/sh" > /c/composer/composer
-        - echo 'php /c/composer/composer.phar "$@"' >> /c/composer/composer
-        - chmod +x /c/composer/composer
-        - cat  /c/composer/composer
-    - name: linux with installed npm (7.1)
+      script: |
+        if [ ! -f /tmp/test/vendor/bin/yarn.bat ]; then
+          echo "yarn.bat doesn't exist in bin"
+          exit 1
+        fi
+        if [ ! -f /tmp/test/vendor/bin/yarnpkg.bat ]; then
+          echo "yarnpkg.bat doesn't exist in bin"
+          exit 1
+        fi
+    - os: linux
+      name: linux (7.1)
       php: 7.1
-      os: linux
       addons:
         apt:
           packages:
-            - npm
+            - nodejs
+      script: |
+        if [ ! -x /tmp/test/vendor/bin/yarn ]; then
+          echo "yarn doesn't exist in bin"
+          exit 1
+        fi
+        if [ ! -x /tmp/test/vendor/bin/yarnpkg ]; then
+          echo "yarnpkg doesn't exist in bin"
+          exit 1
+        fi
     - os: linux
-      name: linux with installed npm and yarn (7.1)
-      php: 7.1
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
+      name: linux (7.2)
+      php: 7.2
       addons:
         apt:
           packages:
-            - npm
+            - nodejs
+      script: |
+        if [ ! -x /tmp/test/vendor/bin/yarn ]; then
+          echo "yarn doesn't exist in bin"
+          exit 1
+        fi
+        if [ ! -x /tmp/test/vendor/bin/yarnpkg ]; then
+          echo "yarnpkg doesn't exist in bin"
+          exit 1
+        fi
     - os: linux
-      name: linux with installed yarn (7.1)
-      php: 7.1
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-    - os: linux
-      name: linux without yarn and npm (7.1)
-      php: 7.1
+      name: linux (7.3)
+      php: 7.3
+      addons:
+        apt:
+          packages:
+            - nodejs
+      script: |
+        if [ ! -x /tmp/test/vendor/bin/yarn ]; then
+          echo "yarn doesn't exist in bin"
+          exit 1
+        fi
+        if [ ! -x /tmp/test/vendor/bin/yarnpkg ]; then
+          echo "yarnpkg doesn't exist in bin"
+          exit 1
+        fi
     - os: osx
-      name: osx without yarn and npm
-      language: objective-c
-      osx_image: xcode9.4
-      before_install:
-        - brew uninstall --force node
-        - brew cleanup
-        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
-        - brew update
-        - brew tap homebrew/core
-        - brew install composer
-    - os: osx
-      name: osx with installed npm
+      name: osx
       osx_image: xcode9.4
       language: objective-c
       before_install:
@@ -125,80 +89,15 @@ matrix:
         - brew update
         - brew tap homebrew/core
         - brew install composer node
-    - os: osx
-      name: osx with installed npm and yarn
-      osx_image: xcode9.4
-      language: objective-c
-      before_install:
-        - brew uninstall --force node
-        - brew cleanup
-        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
-        - brew update
-        - brew tap homebrew/core
-        - brew install composer node yarn
-    - os: osx
-      name: osx with installed yarn
-      osx_image: xcode9.4
-      language: objective-c
-      before_install:
-        - brew uninstall --force node
-        - brew cleanup
-        - rm -rf ~/.npm /usr/local/bin/npm /usr/local/lib/dtrace/node.d
-        - brew update
-        - brew tap homebrew/core
-        - brew install composer yarn
-    - name: linux with installed npm (7.2)
-      php: 7.2
-      os: linux
-      addons:
-        apt:
-          packages:
-            - npm
-    - os: linux
-      name: linux with installed npm and yarn (7.2)
-      php: 7.2
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-      addons:
-        apt:
-          packages:
-            - npm
-    - os: linux
-      name: linux with installed yarn (7.2)
-      php: 7.2
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-    - os: linux
-      name: linux without yarn and npm (7.2)
-      php: 7.2
-    - name: linux with installed npm (7.3)
-      php: 7.3
-      os: linux
-      addons:
-        apt:
-          packages:
-            - npm
-    - os: linux
-      name: linux with installed npm and yarn (7.3)
-      php: 7.3
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-      addons:
-        apt:
-          packages:
-            - npm
-    - os: linux
-      name: linux with installed yarn (7.3)
-      php: 7.3
-      before_install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-    - os: linux
-      name: linux without yarn and npm (7.3)
-      php: 7.3
+      script: |
+        if [ ! -x /tmp/test/vendor/bin/yarn ]; then
+          echo "yarn doesn't exist in bin"
+          exit 1
+        fi
+        if [ ! -x /tmp/test/vendor/bin/yarnpkg ]; then
+          echo "yarnpkg doesn't exist in bin"
+          exit 1
+        fi
 
 cache:
   directories:
@@ -207,7 +106,7 @@ cache:
 install:
   - composer -V
 
-script:
+before_script:
   - cd /tmp
   - mkdir test
   - cd test
