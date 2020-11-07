@@ -1,0 +1,123 @@
+name: Autorelease
+
+on:
+  schedule:
+    - cron:  '0 */24 * * *'
+
+jobs:
+  do-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking auto code...
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Fetching last yarn information...
+        id: last_yarn_release
+        run: |
+          API_CONTENT=$(curl -sL https://api.github.com/repos/yarnpkg/yarn/releases/latest)
+          echo "::set-output name=tag::$(echo "$API_CONTENT" | jq -r '.tag_name')"
+          echo "::set-output name=url::$(echo "$API_CONTENT" | jq -r '.html_url')"
+          echo "::set-output name=version::$(echo "$API_CONTENT" | jq -r '.tag_name' | cut -c2- )"
+
+      - name: Getting last similar release tag...
+        id: similar_release_tag
+        run: |
+          echo "::set-output name=value::$(git tag -l --sort=-committerdate | grep ^${{ steps.last_yarn_release.outputs.tag }} | grep - | head -n 1)"
+
+      - name: Getting last similar release hash...
+        id: similar_release_hash
+        run: |
+          if [ "${{ steps.similar_release_tag.outputs.value }}" == "" ]; then
+             echo "::set-output name=value::"
+          else
+             echo "::set-output name=value::$(git show-ref -s ${{ steps.similar_release_tag.outputs.value }})"
+          fi;
+
+      - name: Calculating last release variant...
+        id: last_release_variant
+        run: |
+          echo "::set-output name=value::$(echo '${{ steps.similar_release_tag.outputs.value }}' | cut -f2- -d-)"
+
+      - name: Calculating new release variant...
+        id: new_release_variant
+        run: |
+          VARIANT='${{ steps.last_release_variant.outputs.value }}'
+          if [ "$VARIANT" == "" ]; then
+             VARIANT=1
+          elif [ "${{ steps.last_yarn_release.outputs.tag }}" == "${{ steps.similar_release_tag.outputs.value }}" ]; then
+             VARIANT=1
+          elif [ "${{ steps.similar_release_hash.outputs.value }}" != "$GITHUB_SHA" ]; then
+             VARIANT=$(($VARIANT + 1))
+          fi;
+          echo "::set-output name=value::$VARIANT"
+
+      - name: Generating release message...
+        id: new_release_msg
+        run: |
+          NEWLINE=$'\n'
+          NEW_RELEASE_MESSAGE="Installs [Yarn ${{ steps.last_yarn_release.outputs.tag }}](${{ steps.last_yarn_release.outputs.url }})"
+          NEW_RELEASE_MESSAGE="${NEW_RELEASE_MESSAGE}${NEWLINE}Installer build is ${{ steps.new_release_variant.outputs.value }}"
+          if [ "${{ steps.new_release_variant.outputs.value }}" != "1" ]; then
+            CHANGES_BETWEEN_COMMITS=$(git log --oneline ${{ steps.similar_release_hash.outputs.value }}..HEAD | grep -v Merge | while read line ; do echo " * $line" ; done)
+            NEW_RELEASE_MESSAGE="${NEW_RELEASE_MESSAGE}${NEWLINE}${NEWLINE}Installer changes:${NEWLINE}${CHANGES_BETWEEN_COMMITS}"
+          fi;
+          NEW_RELEASE_MESSAGE="${NEW_RELEASE_MESSAGE//'%'/'%25'}"
+          NEW_RELEASE_MESSAGE="${NEW_RELEASE_MESSAGE//$'\n'/'%0A'}"
+          NEW_RELEASE_MESSAGE="${NEW_RELEASE_MESSAGE//$'\r'/'%0D'}"
+          echo "::set-output name=value::$NEW_RELEASE_MESSAGE"
+
+      - name: Calculating new release tag...
+        id: new_release_tag
+        run: |
+          echo "::set-output name=value::${{ steps.last_yarn_release.outputs.tag }}-${{ steps.new_release_variant.outputs.value }}"
+
+      - name: Creating composer.json...
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: composer.json
+          write-mode: overwrite
+          contents: |
+            {
+              "name": "imponeer/composer-yarn-installer",
+              "type": "library",
+              "description": "Installs specific yarn version in vendor/",
+              "license": "MIT",
+              "keywords": [
+                "yarn",
+                "frontend",
+                "javascript"
+              ],
+              "authors": [
+                {
+                    "name": "Raimondas Rimkevičius",
+                    "email": "github@mekdrop.name"
+                }
+              ],
+              "require": {
+                "mariusbuescher/node-composer": ">1.2.2"
+              },
+              "provides": {
+                "yarn": "${{ steps.last_yarn_release.outputs.version }}"
+              }
+            }
+
+      - name: Trying to commit changes...
+        uses: stefanzweifel/git-auto-commit-action@v4
+        id: auto-commit-action
+        with:
+          commit_message: Yarn updated to ${{ steps.last_yarn_release.outputs.tag }}
+
+      - name: Creating release...
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.new_release_tag.outputs.value }}
+          release_name: ${{ steps.new_release_tag.outputs.value }}
+          body: ${{ steps.new_release_msg.outputs.value }}
+          draft: false
+          prerelease: false
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
