@@ -1,0 +1,27 @@
+{
+  "name": "imponeer/composer-yarn-installer",
+  "type": "library",
+  "description": "Installs specific yarn version in vendor/",
+  "license": "MIT",
+  "keywords": [
+    "yarn",
+    "frontend",
+    "javascript"
+  ],
+  "authors": [
+    {
+        "name": "Raimondas Rimkevičius",
+        "email": "github@mekdrop.name"
+    }
+  ],
+  "require": {
+    "imponeer/composer-nodejs-installer": "*"
+  },
+  "extra": {
+    "mariusbuescher": {
+      "node-composer": {
+        "yarn-version": "1.22.10",
+      }
+    }
+  }
+}
