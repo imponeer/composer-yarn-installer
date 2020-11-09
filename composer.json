@@ -18,6 +18,6 @@
     "mariusbuescher/node-composer": ">1.2.2"
   },
   "provides": {
-    "yarn": "1.22.10"
+    "yarnpkg/yarn": "1.22.10"
   }
 }
