@@ -99,7 +99,7 @@ jobs:
               "require": {
                 "mariusbuescher/node-composer": ">1.2.2"
               },
-              "provides": {
+              "provide": {
                 "yarnpkg/yarn": "${{ steps.last_yarn_release.outputs.version }}"
               }
             }
