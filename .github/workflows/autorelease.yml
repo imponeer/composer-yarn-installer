@@ -104,20 +104,9 @@ jobs:
               }
             }
 
-      - name: Trying to commit changes...
+      - name: Trying to commit changes and tag it...
         uses: stefanzweifel/git-auto-commit-action@v4
         id: auto-commit-action
         with:
-          commit_message: Yarn updated to ${{ steps.last_yarn_release.outputs.tag }}
-
-      - name: Creating release...
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.new_release_tag.outputs.value }}
-          release_name: ${{ steps.new_release_tag.outputs.value }}
-          body: ${{ steps.new_release_msg.outputs.value }}
-          draft: false
-          prerelease: false
-        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+          commit_message: Yarn updated to ${{ steps.last_node_release.outputs.tag }}
+          tagging_message: ${{ steps.new_release_tag.outputs.value }}
