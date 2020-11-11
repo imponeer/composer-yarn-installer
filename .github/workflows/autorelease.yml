@@ -82,7 +82,7 @@ jobs:
           contents: |
             {
               "name": "imponeer/composer-yarn-installer",
-              "type": "library",
+              "type": "metapackage",
               "description": "Installs specific yarn version in vendor/",
               "license": "MIT",
               "keywords": [
