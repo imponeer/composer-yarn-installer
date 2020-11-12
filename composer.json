@@ -1,6 +1,6 @@
 {
   "name": "imponeer/composer-yarn-installer",
-  "type": "library",
+  "type": "metapackage",
   "description": "Installs specific yarn version in vendor/",
   "license": "MIT",
   "keywords": [
@@ -17,7 +17,7 @@
   "require": {
     "mariusbuescher/node-composer": ">1.2.2"
   },
-  "provides": {
+  "provide": {
     "yarnpkg/yarn": "1.22.10"
   }
 }
