@@ -83,6 +83,7 @@ jobs:
             {
               "name": "imponeer/composer-yarn-installer",
               "type": "metapackage",
+              "version": "${{ steps.new_release_tag.outputs.value }}",
               "description": "Installs specific yarn version in vendor/",
               "license": "MIT",
               "keywords": [
