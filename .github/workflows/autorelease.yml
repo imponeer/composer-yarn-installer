@@ -39,7 +39,7 @@ jobs:
       - name: Calculating last release variant...
         id: last_release_variant
         run: |
-          echo "::set-output name=value::$(echo '${{ steps.similar_release_tag.outputs.value }}' | cut -f2- -d-)"
+          echo "::set-output name=value::$(echo '${{ steps.similar_release_tag.outputs.value }}' | cut -f2- -d- | cut -f2- -dp )"
 
       - name: Calculating new release variant...
         id: new_release_variant
@@ -72,7 +72,7 @@ jobs:
       - name: Calculating new release tag...
         id: new_release_tag
         run: |
-          echo "::set-output name=value::${{ steps.last_yarn_release.outputs.tag }}-${{ steps.new_release_variant.outputs.value }}"
+          echo "::set-output name=value::${{ steps.last_yarn_release.outputs.tag }}-p${{ steps.new_release_variant.outputs.value }}"
 
       - name: Creating composer.json...
         uses: DamianReeves/write-file-action@v1.0
@@ -83,7 +83,6 @@ jobs:
             {
               "name": "imponeer/composer-yarn-installer",
               "type": "metapackage",
-              "version": "${{ steps.new_release_tag.outputs.value }}",
               "description": "Installs specific yarn version in vendor/",
               "license": "MIT",
               "keywords": [
