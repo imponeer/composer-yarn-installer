@@ -1,6 +1,7 @@
 {
   "name": "imponeer/composer-yarn-installer",
   "type": "metapackage",
+  "version": "v1.22.10-4",
   "description": "Installs specific yarn version in vendor/",
   "license": "MIT",
   "keywords": [
